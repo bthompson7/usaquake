@@ -116,6 +116,6 @@ public class App
         double lon = mapViewer.getCenterPosition().getLongitude();
         int zoom = mapViewer.getZoom();
 
-        frame.setTitle(String.format("USAQuake (%.2f / %.2f) - Zoom: %d", lat, lon, zoom));
+        frame.setTitle(String.format("USAQuake Latitude: %.2f / Longitude %.2f - Zoom: %d", lat, lon, zoom));
     }
 }
