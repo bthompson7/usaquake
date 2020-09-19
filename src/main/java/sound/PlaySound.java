@@ -25,6 +25,7 @@ public class PlaySound {
 	 */
 	
 	public void playTheSound() {
+		URL url = getClass().getResource("/resources/EEW1.wav");
 		loadSoundEffect(url);
 		if (clip.isRunning()) {
 			clip.stop();

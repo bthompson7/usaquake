@@ -17,95 +17,90 @@ import model.Earthquake;
 
 public class FetchEQData {
 
-    private final static String USER_AGENT = "Mozilla/5.0";
-    
+	private final static String USER_AGENT = "Mozilla/5.0";
+
 	public FetchEQData() {
-		
+
 	}
-	
-	public JsonObject fetchData() throws Exception {
 
-		    //sending the http get request to the usgs api
-	        String url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&endtime&minmagnitude=3";
+	public List<Earthquake> fetchData() throws Exception {
 
-	        URL obj = new URL(url);
-	        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-	        con.setRequestProperty("User-Agent", USER_AGENT);
-	        int responseCode = con.getResponseCode();
-	        System.out.println("\nSending GET request to URL : " + url);
-	        System.out.println("Response Code : " + responseCode);
-	        
-	        if(responseCode != 200) {
-	        	System.err.println("The api return an error!");
-	        }
-	        
-	        
-	        System.out.println(con.getContentType());
-	        
-	        
-	        BufferedReader in = new BufferedReader(
-	                new InputStreamReader(con.getInputStream()));
-	        String inputLine;
-	        StringBuffer response = new StringBuffer();
-	        Gson g = new Gson();
+		// sending the http get request to the usgs api
+		String url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&endtime&minmagnitude=3";
 
-	        
-	        while ((inputLine = in.readLine()) != null) {
-	            response.append(inputLine + "\n");
-	        }
-	        in.close();
+		URL obj = new URL(url);
+		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+		con.setRequestProperty("User-Agent", USER_AGENT);
+		int responseCode = con.getResponseCode();
+		System.out.println("\nSending GET request to URL : " + url);
+		System.out.println("Response Code : " + responseCode);
 
-	        
-	        //parsing the actual data starts here
-			JsonObject jsonObject = JsonParser.parseString(response.toString()).getAsJsonObject();
-			JsonArray j2Array = jsonObject.get("features").getAsJsonArray();
-			
-			List<Earthquake> quakes = new ArrayList<Earthquake>();
+		if (responseCode != 200) {
+			System.err.println("The api return an error!");
+		}
 
-		
-			for(int i =0; i < j2Array.size(); i++) {
-				
-				JsonObject features = j2Array.get(i).getAsJsonObject();
-				JsonObject properties = features.get("properties").getAsJsonObject();//info about the earthquake
-				JsonObject loc = features.get("geometry").getAsJsonObject();
-				
-				String quakeLocation = properties.get("place").toString();
-				if(isUSAQuake(quakeLocation)) {
-					Earthquake eq = new Earthquake();
-					System.out.println(quakeLocation);
+		System.out.println(con.getContentType());
 
-					/*
-					 * cords example because it confused me:
-					 * 
-					 * we get -> [161.3486,55.7276,81.56]
-					 * latitude / longitude: 55.7276°N / 161.3486°E
-					 */
-					JsonArray cords = loc.get("coordinates").getAsJsonArray();
-					eq.setLat(cords.get(1).getAsDouble());
-					eq.setLon(cords.get(0).getAsDouble());
-					eq.setTitle(quakeLocation);
-					quakes.add(eq);
+		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+		Gson g = new Gson();
 
+		while ((inputLine = in.readLine()) != null) {
+			response.append(inputLine + "\n");
+		}
+		in.close();
+
+		// parsing the actual data starts here
+		JsonObject jsonObject = JsonParser.parseString(response.toString()).getAsJsonObject();
+		JsonArray j2Array = jsonObject.get("features").getAsJsonArray();
+
+		List<Earthquake> quakes = new ArrayList<Earthquake>();
+
+		for (int i = 0; i < j2Array.size(); i++) {
+
+			JsonObject features = j2Array.get(i).getAsJsonObject();
+			JsonObject properties = features.get("properties").getAsJsonObject();// info about the earthquake
+			JsonObject loc = features.get("geometry").getAsJsonObject();
+
+			String quakeLocation = properties.get("place").toString();
+			if (isUSAQuake(quakeLocation)) {
+				Earthquake eq = new Earthquake();
+				/*
+				 * cords example because it confused me:
+				 * 
+				 * we get -> [161.3486,55.7276,81.56] latitude / longitude: 55.7276°N /
+				 * 161.3486°E
+				 */
+				JsonArray cords = loc.get("coordinates").getAsJsonArray();
+				eq.setLat(cords.get(1).getAsDouble());
+				eq.setLon(cords.get(0).getAsDouble());
+				eq.setTitle(quakeLocation);
+				if(properties.get("tsunami").getAsInt() == 1) {
+					eq.setGeneratedTsunami(true);
+				}else {
+					eq.setGeneratedTsunami(false);
 				}
-			
-				
-				
-			}
-						
-			
-	        System.out.println("Done Fetching data");
+				eq.setMag(properties.get("mag").getAsDouble());
+				quakes.add(eq);
 
-	        return jsonObject;
-	    }
-	   
-	   private static boolean isUSAQuake(String str) {
-		   
-		   if(str.contains("CA") || str.contains("Alaska") || str.contains("Nevada") || str.contains("Hawaii")) {
-			   return true;
-		   }
-			   
-		   return false;
-	   }
-	
-	
+			}
+
+		}
+
+		System.out.println("Done Fetching data");
+
+		return quakes;
+	}
+
+	private static boolean isUSAQuake(String str) {
+
+		if (str.contains("CA") || str.contains("Alaska") || str.contains("Nevada") || str.contains("Hawaii")
+				|| str.contains("Oregon") || str.contains("Idaho") || str.contains("Texas")) {
+			return true;
+		}
+
+		return false;
+	}
+
 }

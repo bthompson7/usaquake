@@ -6,7 +6,8 @@ public class Earthquake {
 	private double lat;
 	private double lon;
 	private String title;
-	private boolean tsunami;
+	private double mag;
+	private boolean generateTsunami;
 	
 	
 	public Earthquake() {
@@ -15,13 +16,17 @@ public class Earthquake {
 	
 
 	
-	public boolean isTsunami() {
-		return tsunami;
+
+	public boolean generatedTsunami() {
+		return generateTsunami;
 	}
 
-	public void setTsunami(boolean tsunami) {
-		this.tsunami = tsunami;
+	public void setGeneratedTsunami(boolean generatedTsunami) {
+		this.generateTsunami = generateTsunami;
 	}
+
+
+
 
 	public double getLat() {
 		return lat;
@@ -41,7 +46,12 @@ public class Earthquake {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
+	public double getMag() {
+		return mag;
+	}
+	public void setMag(double mag) {
+		this.mag = mag;
+	}
 	
 	
 }
