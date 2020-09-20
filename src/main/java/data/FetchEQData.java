@@ -26,7 +26,7 @@ public class FetchEQData {
 	public List<Earthquake> fetchData() throws Exception {
 
 		// sending the http get request to the usgs api
-		String url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&endtime&minmagnitude=3";
+		String url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&endtime&minmagnitude=1";
 
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();

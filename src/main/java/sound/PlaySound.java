@@ -24,8 +24,8 @@ public class PlaySound {
 	 * 
 	 */
 	
-	public void playTheSound() {
-		URL url = getClass().getResource("/resources/EEW1.wav");
+	public void playNewEarthquakeSound() {
+		URL url = getClass().getResource("/resources/Shindo1.wav");
 		loadSoundEffect(url);
 		if (clip.isRunning()) {
 			clip.stop();
@@ -35,6 +35,29 @@ public class PlaySound {
 
 	}
 
+	
+	public void playTsunamiAlertSound() {
+		URL url = getClass().getResource("/resources/Tsunami.wav");
+		loadSoundEffect(url);
+		if (clip.isRunning()) {
+			clip.stop();
+		}
+		clip.setFramePosition(0); 
+		clip.start();
+
+	}
+	
+	public void playStrongEarthquakeSound() {
+		URL url = getClass().getResource("/resources/EEW2.wav");
+		loadSoundEffect(url);
+		if (clip.isRunning()) {
+			clip.stop();
+		}
+		clip.setFramePosition(0); 
+		clip.start();
+
+	}
+	
 	private void loadSoundEffect(URL url) {
 		try {
 			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(url);

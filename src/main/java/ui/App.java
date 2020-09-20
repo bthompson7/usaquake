@@ -51,7 +51,6 @@ public class App
      */
     public static void main(String[] args) throws Exception
     {
-    	 
         // Create a TileFactoryInfo for OpenStreetMap
         TileFactoryInfo info = new OSMTileFactoryInfo();
         DefaultTileFactory tileFactory = new DefaultTileFactory(info);
@@ -68,7 +67,7 @@ public class App
         
         // Display the viewer in a JFrame
         final JFrame frame = new JFrame();
-        String text = "Use left mouse button to pan, mouse wheel to zoom and right mouse to select";
+        String text = "Use left mouse button to pan, mouse wheel to zoom";
         frame.add(new JLabel(text), BorderLayout.NORTH);
         mapViewer.setSize(400, 800);
         frame.add(mapViewer);
@@ -77,59 +76,69 @@ public class App
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
         mapViewer.setTileFactory(tileFactory);
+        final JList<String> displayRecentEarthquakes = new JList<String>(); 
+        final JScrollPane listScroller = new JScrollPane();
 
         //thread that fetches the data and draws it every 3 minutes (might change later)
         Thread fetchAndDraw = new Thread() {
 		    public void run() {
+		    	 int previousSize = 0;
+     	         PlaySound ps = new PlaySound();
+
 		        try {
 		        	while(true) {
 		        	  	System.out.println("Thread2 working...");
 		            	FetchEQData fetch = new FetchEQData();
 		        		List<Earthquake> quakesList = fetch.fetchData();
-		        		 DefaultListModel<String> list = new DefaultListModel<String>();  
-		        	        for(int i =0; i < quakesList.size(); i++) {
+		        		
+		        		 if(quakesList.size() - previousSize > 0 && previousSize != 0) {
+		        			    System.out.println("New earthquake detected playing alert sound!");
+			        	        ps.playNewEarthquakeSound();
+		        		 }
+		        		 
+		        		 if(quakesList.get(0).getMag() > 6.0) {
+		        			 ps.playStrongEarthquakeSound();
+		        		 }
+		        		 System.out.println("Most recent earthquake is " + quakesList.get(0).getTitle() + " " + quakesList.get(0).getMag());;
+		        		 
+		        		 DefaultListModel<String> eqList = new DefaultListModel<String>();  
+		        		 eqList.removeAllElements();
+		        	        for(int i =0; i < 20; i++) {
 		        	        	Earthquake quake = quakesList.get(i);
-		        	        	String name = quake.getTitle() + " M " + quake.getMag();
+		        	        	String name = " M " + quake.getMag() + " " + quake.getTitle() + "\n";
 		        	        	if(quake.generatedTsunami()) {
-		        	                name += "Possible Tsunami Detected";
+		        	        		name+="Potential Tsunami. Check tsunami.gov for more info\n";
+		        	        		ps.playTsunamiAlertSound();
 		        	        	}
-		        	        	list.addElement(name);
+		        	        	eqList.addElement(name);
 		        	        }
 		        	        
-
-		        	        JScrollPane listScroller = new JScrollPane();
-		        	        JList<String> displayRecentEarthquakes = new JList<String>(list);  
+		        	        displayRecentEarthquakes.setModel(eqList);
 		        	        
-		        	        displayRecentEarthquakes.setSize(50, 50); 
+		        	        displayRecentEarthquakes.setSize(50, 60); 
 		        	        displayRecentEarthquakes.setFont(new Font("Serif", Font.BOLD, 12));
 		        	        listScroller.setViewportView(displayRecentEarthquakes);
+
 		        	        displayRecentEarthquakes.setLayoutOrientation(JList.VERTICAL);
 		        	        GeoPosition recentQuake = new GeoPosition(quakesList.get(0).getLat(),quakesList.get(0).getLon());
 		        	        mapViewer.setAddressLocation(recentQuake);
 		        	        frame.add(listScroller,BorderLayout.EAST);
-		        	      
-
-
+		        	        frame.revalidate();
+		        	        frame.repaint();
+		        	        
 		        	        //draw waypoints
 		        	        Set<MyWaypoint> waypoints = new HashSet<MyWaypoint>(Arrays.asList(
 		        	                new MyWaypoint("Home", Color.YELLOW, recentQuake)
 		        	                ));
-		        	        
 		        	        WaypointPainter<Waypoint> waypointPainter = new WaypointPainter<Waypoint>();
 		        	        waypointPainter.setWaypoints(waypoints);
-
 		        	        // Create a compound painter that uses both the route-painter and the waypoint-painter
 		        	        List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();
 		        	        painters.add(waypointPainter);
-
 		        	        CompoundPainter<JXMapViewer> painter = new CompoundPainter<JXMapViewer>(painters);
 		        	        mapViewer.setOverlayPainter(painter);
-		        	        PlaySound ps = new PlaySound();
-		        	        ps.playTheSound();
-		        	        frame.revalidate();
-		        	        frame.repaint();
 
-			            Thread.sleep(180000); //3 minutes
+			            Thread.sleep(180000); //3 minutes 300000 = 5 minutes
 		        	}
 		      
 		        } catch(InterruptedException e) {
@@ -143,10 +152,6 @@ public class App
 
 		fetchAndDraw.start();
 		
-        //GeoPosition start = new GeoPosition(36.4370003,-117.9906693);
-
-       
-        
         // Set the focus
         mapViewer.setZoom(13);
 
@@ -170,9 +175,6 @@ public class App
 
 
         mapViewer.addPropertyChangeListener("zoom", new PropertyChangeListener()
-        
-
-        
         
         {
             public void propertyChange(PropertyChangeEvent evt)
@@ -198,6 +200,6 @@ public class App
         double lon = mapViewer.getCenterPosition().getLongitude();
         int zoom = mapViewer.getZoom();
 
-        frame.setTitle(String.format("USAQuake Latitude: %.2f / Longitude %.2f - Zoom: %d", lat, lon, zoom));
+        frame.setTitle(String.format("USAQuake (Alpha v0.1) | Latitude: %.2f / Longitude %.2f | Zoom: %d", lat, lon, zoom));
     }
 }
