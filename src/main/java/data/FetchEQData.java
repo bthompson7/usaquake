@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +21,7 @@ public class FetchEQData {
 
 	private final static String USER_AGENT = "Mozilla/5.0";
 
+	
 	public FetchEQData() {
 
 	}
@@ -26,7 +29,7 @@ public class FetchEQData {
 	public List<Earthquake> fetchData() throws Exception {
 
 		// sending the http get request to the usgs api
-		String url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&endtime&minmagnitude=1";
+		String url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=" + getCurrentDate() + "&endtime&minmagnitude=1";
 
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -76,9 +79,9 @@ public class FetchEQData {
 				eq.setLat(cords.get(1).getAsDouble());
 				eq.setLon(cords.get(0).getAsDouble());
 				eq.setTitle(quakeLocation);
-				if(properties.get("tsunami").getAsInt() == 1) {
+				if (properties.get("tsunami").getAsInt() == 1) {
 					eq.setGeneratedTsunami(true);
-				}else {
+				} else {
 					eq.setGeneratedTsunami(false);
 				}
 				eq.setMag(properties.get("mag").getAsDouble());
@@ -94,13 +97,19 @@ public class FetchEQData {
 	}
 
 	private static boolean isUSAQuake(String str) {
-
 		if (str.contains("CA") || str.contains("Alaska") || str.contains("Nevada") || str.contains("Hawaii")
-				|| str.contains("Oregon") || str.contains("Idaho") || str.contains("Texas")) {
+				|| str.contains("Oregon") || str.contains("Washington") || str.contains("Montana") || str.contains("Idaho")
+				|| str.contains("Texas")) {
 			return true;
 		}
 
 		return false;
+	}
+	
+	
+	private static String getCurrentDate() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		return LocalDate.now().format(formatter);
 	}
 
 }
