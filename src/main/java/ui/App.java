@@ -3,6 +3,7 @@ package ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -15,11 +16,14 @@ import java.util.Set;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.event.MouseInputListener;
 
@@ -69,8 +73,12 @@ public class App {
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setVisible(true);
-		frame.add(menuBar, BorderLayout.NORTH);
-		mapViewer.setTileFactory(tileFactory);
+    	mapViewer.setTileFactory(tileFactory);
+		
+		JTextField tf = new JTextField();
+		tf.setText("No warnings currently active");
+		tf.setEditable(false);
+		tf.setBackground(Color.GREEN);
 
 		// add menuItem to menuBar
 		JMenuItem menuItem = new JMenuItem("Settings", KeyEvent.VK_T);
@@ -78,7 +86,13 @@ public class App {
 			SettingsView sv = new SettingsView();
 		});
 		menu.add(menuItem);
-
+		
+		
+		JPanel panel = new JPanel(new GridLayout(0, 1));
+		panel.add(menuBar);
+		panel.add(tf);
+		frame.add(panel,BorderLayout.NORTH);
+		
 		final JList<String> displayRecentEarthquakes = new JList<String>();
 		final JScrollPane listScroller = new JScrollPane();
 
@@ -107,17 +121,21 @@ public class App {
 							ps.playStrongEarthquakeSound();
 						}
 
-						System.out.println("Most recent earthquake is " + quakesList.get(0).getTitle() + " "
-								+ quakesList.get(0).getMag());
-						;
-
 						DefaultListModel<String> listModel = new DefaultListModel<String>();
 						for (int i = 0; i < quakesList.size(); i++) {
 							Earthquake quake = quakesList.get(i);
 							String name = " M " + quake.getMag() + " " + quake.getTitle() + "\n";
 							if (quake.generatedTsunami()) {
 								name += "Potential Tsunami. Check tsunami.gov for more info\n";
+								tf.setText(name);
+								tf.setBackground(Color.RED);
+								frame.toFront();
+								frame.revalidate();
+								frame.repaint();
 								ps.playTsunamiAlertSound();
+							}else {
+								tf.setText("No warnings currently active");
+								tf.setBackground(Color.GREEN);
 							}
 							listModel.addElement(name);
 						}
