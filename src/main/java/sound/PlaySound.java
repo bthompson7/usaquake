@@ -58,6 +58,36 @@ public class PlaySound {
 
 	}
 	
+	public void playMag5Sound() {
+		URL url = getClass().getResource("/resources/Mag5.wav");
+		loadSoundEffect(url);
+		if (clip.isRunning()) {
+			clip.stop();
+		}
+		clip.setFramePosition(0); 
+		clip.start();
+
+	}
+	public void playMag6Sound() {
+		URL url = getClass().getResource("/resources/Mag6.wav");
+		loadSoundEffect(url);
+		if (clip.isRunning()) {
+			clip.stop();
+		}
+		clip.setFramePosition(0); 
+		clip.start();
+
+	}
+	public void playMag7Sound() {
+		URL url = getClass().getResource("/resources/Mag7Up.wav");
+		loadSoundEffect(url);
+		if (clip.isRunning()) {
+			clip.stop();
+		}
+		clip.setFramePosition(0); 
+		clip.start();
+
+	}
 	private void loadSoundEffect(URL url) {
 		try {
 			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(url);

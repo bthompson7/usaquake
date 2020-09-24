@@ -8,10 +8,16 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.swing.DefaultListModel;
@@ -21,12 +27,14 @@ import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.event.MouseInputListener;
 
+import org.apache.commons.configuration.ConfigurationException;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.cache.FileBasedLocalCache;
@@ -50,6 +58,7 @@ public class App {
 
 	public static void main(String[] args) throws Exception {
 		// Create a TileFactoryInfo for OpenStreetMap
+		boolean tsunamiMode = false;
 		TileFactoryInfo info = new OSMTileFactoryInfo();
 		DefaultTileFactory tileFactory = new DefaultTileFactory(info);
 
@@ -62,8 +71,10 @@ public class App {
 
 		// Create the menu bar.
 		JMenuBar menuBar = new JMenuBar();
-		JMenu menu = new JMenu("About");
-		menuBar.add(menu);
+		JMenu aboutMenu = new JMenu("About");
+		menuBar.add(aboutMenu);
+		JMenu mapMenu = new JMenu("Map");
+		menuBar.add(mapMenu);
 
 		// build the ui
 		final JFrame frame = new JFrame();
@@ -73,26 +84,34 @@ public class App {
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setVisible(true);
-    	mapViewer.setTileFactory(tileFactory);
-		
+		mapViewer.setTileFactory(tileFactory);
+
 		JTextField tf = new JTextField();
 		tf.setText("No warnings currently active");
 		tf.setEditable(false);
 		tf.setBackground(Color.GREEN);
 
 		// add menuItem to menuBar
-		JMenuItem menuItem = new JMenuItem("Settings", KeyEvent.VK_T);
-		menuItem.addActionListener((e) -> {
-			SettingsView sv = new SettingsView();
+		JMenuItem aboutMenuItem = new JMenuItem("Settings", KeyEvent.VK_T);
+
+		JMenuItem mapMenuItem = new JMenuItem("Reset Zoom");
+
+		aboutMenuItem.addActionListener((e) -> {
+
+			try {
+				SettingsView sv = new SettingsView();
+			} catch (IOException | URISyntaxException | ConfigurationException e1) {
+				e1.printStackTrace();
+			}
 		});
-		menu.add(menuItem);
-		
+		aboutMenu.add(aboutMenuItem);
+		mapMenu.add(mapMenuItem);
 		
 		JPanel panel = new JPanel(new GridLayout(0, 1));
 		panel.add(menuBar);
 		panel.add(tf);
-		frame.add(panel,BorderLayout.NORTH);
-		
+		frame.add(panel, BorderLayout.NORTH);
+
 		final JList<String> displayRecentEarthquakes = new JList<String>();
 		final JScrollPane listScroller = new JScrollPane();
 
@@ -109,15 +128,21 @@ public class App {
 						FetchEQData fetch = new FetchEQData();
 						List<Earthquake> quakesList = fetch.fetchData();
 
-						System.out.println(quakesList.size());
+						Earthquake recentQuake = quakesList.get(0);
 
-						if (!quakesList.get(0).getTitle().equals(prevQuake)) {
-							System.out.println("New earthquake detected playing alert sound!");
+						prevQuake = recentQuake.getTitle();
+						if (recentQuake.getMag() >= 4.0 && recentQuake.getMag() <= 4.9) {
 							ps.playNewEarthquakeSound();
 						}
 
-						prevQuake = quakesList.get(0).getTitle();
-						if (quakesList.get(0).getMag() >= 6.0) {
+						if (recentQuake.getMag() >= 5.0 && recentQuake.getMag() <= 5.9) {
+							ps.playMag5Sound();
+						}
+						if (recentQuake.getMag() >= 6.0 && recentQuake.getMag() <= 6.9) {
+							ps.playMag6Sound();
+						}
+						if (recentQuake.getMag() >= 7.0) {
+							ps.playMag7Sound();
 							ps.playStrongEarthquakeSound();
 						}
 
@@ -125,7 +150,7 @@ public class App {
 						for (int i = 0; i < quakesList.size(); i++) {
 							Earthquake quake = quakesList.get(i);
 							String name = " M " + quake.getMag() + " " + quake.getTitle() + "\n";
-							if (quake.generatedTsunami()) {
+							if (quake.generatedTsunami() && quake.getMag() >= 6.5) {
 								name += "Potential Tsunami. Check tsunami.gov for more info\n";
 								tf.setText(name);
 								tf.setBackground(Color.RED);
@@ -133,8 +158,8 @@ public class App {
 								frame.revalidate();
 								frame.repaint();
 								ps.playTsunamiAlertSound();
-							}else {
-								tf.setText("No warnings currently active");
+							} else {
+								tf.setText("No Tsunami or Earthquake warnings currently active");
 								tf.setBackground(Color.GREEN);
 							}
 							listModel.addElement(name);
@@ -147,30 +172,40 @@ public class App {
 						listScroller.setViewportView(displayRecentEarthquakes);
 
 						displayRecentEarthquakes.setLayoutOrientation(JList.VERTICAL);
-						GeoPosition recentQuake = new GeoPosition(quakesList.get(0).getLat(),
+						GeoPosition recentQuakePos = new GeoPosition(quakesList.get(0).getLat(),
 								quakesList.get(0).getLon());
-						mapViewer.setAddressLocation(recentQuake);
+						mapViewer.setAddressLocation(recentQuakePos);
 						frame.add(listScroller, BorderLayout.EAST);
 						frame.revalidate();
 						frame.repaint();
 
+						mapMenuItem.addActionListener((e) -> {
+							mapViewer.setZoom(13);
+							mapViewer.setAddressLocation(recentQuakePos);
+
+
+						});
+
+						
 						// draw waypoints
-						Set<MyWaypoint> waypoints = new HashSet<MyWaypoint>(
-								Arrays.asList(new MyWaypoint("Home", Color.YELLOW, recentQuake)));
+						MyWaypoint wp = new MyWaypoint("Home", Color.orange, recentQuakePos);
+
+						Set<MyWaypoint> waypoints = new HashSet<MyWaypoint>(Arrays.asList(wp));
+
 						WaypointPainter<Waypoint> waypointPainter = new WaypointPainter<Waypoint>();
 						waypointPainter.setWaypoints(waypoints);
+
 						List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();
 						painters.add(waypointPainter);
 						CompoundPainter<JXMapViewer> painter = new CompoundPainter<JXMapViewer>(painters);
 						mapViewer.setOverlayPainter(painter);
 
-						Thread.sleep(180000); // 3 minutes 300000 = 5 minutes
+						Thread.sleep(180000); // 180000 = 3 minutes 300000 = 5 minutes
 					}
 
 				} catch (InterruptedException e) {
 					System.out.println(e.getMessage());
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -196,6 +231,7 @@ public class App {
 		mapViewer.addMouseMotionListener(sa);
 		mapViewer.setOverlayPainter(sp);
 
+		
 		mapViewer.addPropertyChangeListener("zoom", new PropertyChangeListener()
 
 		{

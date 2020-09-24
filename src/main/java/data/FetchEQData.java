@@ -99,7 +99,7 @@ public class FetchEQData {
 	private static boolean isUSAQuake(String str) {
 		if (str.contains("CA") || str.contains("Alaska") || str.contains("Nevada") || str.contains("Hawaii")
 				|| str.contains("Oregon") || str.contains("Washington") || str.contains("Montana") || str.contains("Idaho")
-				|| str.contains("Texas")) {
+				|| str.contains("Texas") || str.contains("Wyoming") || str.contains("Utah")) {
 			return true;
 		}
 
