@@ -1,28 +1,18 @@
 package ui;
 
-import javax.swing.JRadioButton;
-
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Properties;
 
 import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import sound.PlaySound;
-
 import org.apache.commons.configuration.ConfigurationException;
+
+import sound.PlaySound;
 
 public class SettingsView {
 

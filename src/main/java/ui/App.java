@@ -56,6 +56,14 @@ import sound.PlaySound;
 
 public class App {
 
+	/*
+	 * Main entry point for USAQuake
+	 * 
+	 * This app has been tested on and will work on (but should work on any device with java installed):
+	 * -> Windows 10 64 Bit
+	 * -> Ubuntu 18.04.5 LTS 
+	 */
+	
 	public static void main(String[] args) throws Exception {
 		// Create a TileFactoryInfo for OpenStreetMap
 		boolean tsunamiMode = false;
@@ -176,16 +184,10 @@ public class App {
 								quakesList.get(0).getLon());
 						mapViewer.setAddressLocation(recentQuakePos);
 						frame.add(listScroller, BorderLayout.EAST);
+					
+
 						frame.revalidate();
 						frame.repaint();
-
-						mapMenuItem.addActionListener((e) -> {
-							mapViewer.setZoom(13);
-							mapViewer.setAddressLocation(recentQuakePos);
-
-
-						});
-
 						
 						// draw waypoints
 						MyWaypoint wp = new MyWaypoint("Home", Color.orange, recentQuakePos);
@@ -212,6 +214,15 @@ public class App {
 		};
 
 		fetchAndDraw.start();
+		
+		
+		mapMenuItem.addActionListener((e) -> {
+			mapViewer.setZoom(13);
+			GeoPosition pos = mapViewer.getAddressLocation();
+			mapViewer.setAddressLocation(pos);
+
+
+		});
 
 		// Set the map focus
 		mapViewer.setZoom(13);
