@@ -1,6 +1,16 @@
 package data;
 
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+
+import java.time.Duration;
+
 public class EarlyEarthquakeWarning {
 
 	/*
@@ -31,8 +41,25 @@ public class EarlyEarthquakeWarning {
 	 * 
 	 * ^ thats a good one the past hour for "did an earthquake just happen"
 	 * 
+	 * 
+	 * 
+	 * <i class="material-icons-extended gray">file_download</i>
+	 * 
+	 * 
 	 */
 	public boolean earlyWarning() {
+		
+		WebDriver driver = new FirefoxDriver();
+        WebDriverWait wait = new WebDriverWait(driver, 30);
+        try {
+            driver.get("https://google.com");
+            driver.findElement(By.name("q")).sendKeys("cheese" + Keys.ENTER);
+            WebElement firstResult = wait.until(presenceOfElementLocated(By.cssSelector("h3>div")));
+            System.out.println(firstResult.getAttribute("textContent"));
+        } finally {
+            driver.quit();
+        }
+        
 		return false;
 	}
 }

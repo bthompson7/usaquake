@@ -1,5 +1,10 @@
 package model;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 public class Earthquake {
 
 	
@@ -7,26 +12,29 @@ public class Earthquake {
 	private double lon;
 	private String title;
 	private double mag;
-	private boolean generateTsunami;
+	private boolean generatedTsunami;
+	private String timeEarthquakeHappened;
 	
 	
+	public String getTimeEarthquakeHappened() {
+		return timeEarthquakeHappened;
+	}
+
+	public void setTimeEarthquakeHappened(String timeEarthquakeHappened) {
+		this.timeEarthquakeHappened = timeEarthquakeHappened;
+	}
+
 	public Earthquake() {
 		
 	}
 	
-
-	
-
 	public boolean generatedTsunami() {
-		return generateTsunami;
+		return generatedTsunami;
 	}
 
 	public void setGeneratedTsunami(boolean generatedTsunami) {
-		this.generateTsunami = generateTsunami;
+		this.generatedTsunami = generatedTsunami;
 	}
-
-
-
 
 	public double getLat() {
 		return lat;
@@ -51,6 +59,16 @@ public class Earthquake {
 	}
 	public void setMag(double mag) {
 		this.mag = mag;
+	}
+	
+	public String unixTimeToDate(long epoch) {
+		   Date date = new Date(epoch);
+		   DateFormat formatter = new SimpleDateFormat("MM:dd:YYYY:HH:mm:ss");
+		   formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+		   String dateFormatted = formatter.format(date);
+		   return dateFormatted;
+	
+		
 	}
 	
 	

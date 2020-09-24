@@ -78,6 +78,9 @@ public class FetchEQData {
 				JsonArray cords = loc.get("coordinates").getAsJsonArray();
 				eq.setLat(cords.get(1).getAsDouble());
 				eq.setLon(cords.get(0).getAsDouble());
+				
+				eq.setTimeEarthquakeHappened(eq.unixTimeToDate(properties.get("time").getAsLong()));
+				
 				eq.setTitle(quakeLocation);
 				if (properties.get("tsunami").getAsInt() == 1) {
 					eq.setGeneratedTsunami(true);

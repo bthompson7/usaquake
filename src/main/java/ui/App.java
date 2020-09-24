@@ -139,6 +139,7 @@ public class App {
 						Earthquake recentQuake = quakesList.get(0);
 
 						prevQuake = recentQuake.getTitle();
+						System.out.println(recentQuake.getTimeEarthquakeHappened());
 						if (recentQuake.getMag() >= 4.0 && recentQuake.getMag() <= 4.9) {
 							ps.playNewEarthquakeSound();
 						}
@@ -155,9 +156,10 @@ public class App {
 						}
 
 						DefaultListModel<String> listModel = new DefaultListModel<String>();
+						
 						for (int i = 0; i < quakesList.size(); i++) {
 							Earthquake quake = quakesList.get(i);
-							String name = " M " + quake.getMag() + " " + quake.getTitle() + "\n";
+							String name = quake.getTimeEarthquakeHappened() + "\n M" + quake.getMag() + " " + quake.getTitle() + "\n";
 							if (quake.generatedTsunami() && quake.getMag() >= 6.5) {
 								name += "Potential Tsunami. Check tsunami.gov for more info\n";
 								tf.setText(name);
@@ -174,8 +176,7 @@ public class App {
 						}
 
 						displayRecentEarthquakes.setModel(listModel);
-
-						displayRecentEarthquakes.setSize(50, 60);
+						displayRecentEarthquakes.setSize(30, 60);
 						displayRecentEarthquakes.setFont(new Font("Serif", Font.BOLD, 12));
 						listScroller.setViewportView(displayRecentEarthquakes);
 
