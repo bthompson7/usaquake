@@ -31,12 +31,13 @@ public class FetchEQData {
 		// sending the http get request to the usgs api
 		String url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=" + getCurrentDate() + "&endtime&minmagnitude=1";
 
+		//String url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2020-07-22&endtime=2020-07-23&minmagnitude=7";
+		//tsunami test query 
+		//https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2020-07-22&endtime=2020-07-23&minmagnitude=7
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		con.setRequestProperty("User-Agent", USER_AGENT);
 		int responseCode = con.getResponseCode();
-		System.out.println("\nSending GET request to URL : " + url);
-		System.out.println("Response Code : " + responseCode);
 
 		if (responseCode != 200) {
 			System.err.println("The api return an error!");
@@ -89,20 +90,15 @@ public class FetchEQData {
 				}
 				eq.setMag(properties.get("mag").getAsDouble());
 				quakes.add(eq);
-
 			}
-
 		}
-
-		System.out.println("Done Fetching data");
-
 		return quakes;
 	}
 
 	private static boolean isUSAQuake(String str) {
-		if (str.contains("CA") || str.contains("Alaska") || str.contains("Nevada") || str.contains("Hawaii")
+		if (str.contains("CA") || str.contains("California") || str.contains("Alaska") || str.contains("Nevada") || str.contains("Hawaii")
 				|| str.contains("Oregon") || str.contains("Washington") || str.contains("Montana") || str.contains("Idaho")
-				|| str.contains("Texas") || str.contains("Wyoming") || str.contains("Utah")) {
+				|| str.contains("Texas") || str.contains("Wyoming") || str.contains("Utah") || str.contains("New Mexico")) {
 			return true;
 		}
 

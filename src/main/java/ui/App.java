@@ -53,20 +53,19 @@ import org.jxmapviewer.viewer.WaypointPainter;
 import data.FetchEQData;
 import model.Earthquake;
 import sound.PlaySound;
+import util.Logging;
 
 public class App {
 
 	/*
 	 * Main entry point for USAQuake
 	 * 
-	 * This app has been tested on and will work on (but should work on any device with java installed):
-	 * -> Windows 10 64 Bit
-	 * -> Ubuntu 18.04.5 LTS 
+	 * This app has been tested on and will work on (but should work on any device
+	 * with java installed): -> Windows 10 64 Bit -> Ubuntu 18.04.5 LTS
 	 */
-	
+
 	public static void main(String[] args) throws Exception {
 		// Create a TileFactoryInfo for OpenStreetMap
-		boolean tsunamiMode = false;
 		TileFactoryInfo info = new OSMTileFactoryInfo();
 		DefaultTileFactory tileFactory = new DefaultTileFactory(info);
 
@@ -83,6 +82,9 @@ public class App {
 		menuBar.add(aboutMenu);
 		JMenu mapMenu = new JMenu("Map");
 		menuBar.add(mapMenu);
+
+		// init logging
+		Logging logFile = new Logging();
 
 		// build the ui
 		final JFrame frame = new JFrame();
@@ -114,7 +116,7 @@ public class App {
 		});
 		aboutMenu.add(aboutMenuItem);
 		mapMenu.add(mapMenuItem);
-		
+
 		JPanel panel = new JPanel(new GridLayout(0, 1));
 		panel.add(menuBar);
 		panel.add(tf);
@@ -122,53 +124,62 @@ public class App {
 
 		final JList<String> displayRecentEarthquakes = new JList<String>();
 		final JScrollPane listScroller = new JScrollPane();
-
 		// thread that fetches the data and draws it every 3 minutes (might change
 		// later)
 		Thread fetchAndDraw = new Thread() {
 			public void run() {
 				String prevQuake = "";
 				PlaySound ps = new PlaySound();
+				boolean tsunamiMode = false;
 
 				try {
 					while (true) {
-						System.out.println("Thread2 working...");
+						logFile.logInfo("Thread2 working...");
 						FetchEQData fetch = new FetchEQData();
 						List<Earthquake> quakesList = fetch.fetchData();
-
 						Earthquake recentQuake = quakesList.get(0);
-
 						prevQuake = recentQuake.getTitle();
-						System.out.println(recentQuake.getTimeEarthquakeHappened());
+
+						logFile.logInfo("Got Recent Earthquake data quakesList size is` " + quakesList.size());
 						if (recentQuake.getMag() >= 4.0 && recentQuake.getMag() <= 4.9) {
 							ps.playNewEarthquakeSound();
+
+							logFile.logInfo("An Earthquake between Mag 4.0 to 4.9 occurred!");
 						}
 
 						if (recentQuake.getMag() >= 5.0 && recentQuake.getMag() <= 5.9) {
 							ps.playMag5Sound();
+							logFile.logInfo("An Earthquake between Mag 5.0 to 5.9 occurred!");
+
 						}
 						if (recentQuake.getMag() >= 6.0 && recentQuake.getMag() <= 6.9) {
+							logFile.logInfo("An Earthquake between Mag 6.0 to 6.9 occurred!");
+
 							ps.playMag6Sound();
 						}
 						if (recentQuake.getMag() >= 7.0) {
 							ps.playMag7Sound();
-							ps.playStrongEarthquakeSound();
+							logFile.logInfo("An Earthquake between Mag 7.0 or higher occurred!");
+
 						}
 
 						DefaultListModel<String> listModel = new DefaultListModel<String>();
-						
+
 						for (int i = 0; i < quakesList.size(); i++) {
 							Earthquake quake = quakesList.get(i);
-							String name = quake.getTimeEarthquakeHappened() + "\n M" + quake.getMag() + " " + quake.getTitle() + "\n";
-							if (quake.generatedTsunami() && quake.getMag() >= 6.5) {
-								name += "Potential Tsunami. Check tsunami.gov for more info\n";
+							String name = quake.getTimeEarthquakeHappened() + "\n M" + quake.getMag() + " "
+									+ quake.getTitle() + "\n";
+							if (!tsunamiMode && quake.generatedTsunami() && i == 0 && quake.getMag() > 6.5) {
+								name += "Potential Tsunami! Check tsunami.gov for more info\n";
 								tf.setText(name);
 								tf.setBackground(Color.RED);
 								frame.toFront();
 								frame.revalidate();
 								frame.repaint();
-								ps.playTsunamiAlertSound();
-							} else {
+								logFile.logInfo("Possible Tsunami Detected!!!");
+								tsunamiMode = true;
+								break;
+							} else if (!tsunamiMode) {
 								tf.setText("No Tsunami or Earthquake warnings currently active");
 								tf.setBackground(Color.GREEN);
 							}
@@ -185,11 +196,10 @@ public class App {
 								quakesList.get(0).getLon());
 						mapViewer.setAddressLocation(recentQuakePos);
 						frame.add(listScroller, BorderLayout.EAST);
-					
 
 						frame.revalidate();
 						frame.repaint();
-						
+
 						// draw waypoints
 						MyWaypoint wp = new MyWaypoint("Home", Color.orange, recentQuakePos);
 
@@ -207,21 +217,20 @@ public class App {
 					}
 
 				} catch (InterruptedException e) {
-					System.out.println(e.getMessage());
+					logFile.logError(e.getMessage());
 				} catch (Exception e) {
-					e.printStackTrace();
+					logFile.logError(e.getMessage());
+
 				}
 			}
 		};
 
 		fetchAndDraw.start();
-		
-		
+
 		mapMenuItem.addActionListener((e) -> {
 			mapViewer.setZoom(13);
 			GeoPosition pos = mapViewer.getAddressLocation();
 			mapViewer.setAddressLocation(pos);
-
 
 		});
 
@@ -243,7 +252,6 @@ public class App {
 		mapViewer.addMouseMotionListener(sa);
 		mapViewer.setOverlayPainter(sp);
 
-		
 		mapViewer.addPropertyChangeListener("zoom", new PropertyChangeListener()
 
 		{
