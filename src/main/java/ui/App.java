@@ -8,26 +8,20 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -64,6 +58,7 @@ public class App {
 	 * with java installed): -> Windows 10 64 Bit -> Ubuntu 18.04.5 LTS
 	 */
 
+	private static final int DEFAULT_ZOOM = 11;
 	public static void main(String[] args) throws Exception {
 		// Create a TileFactoryInfo for OpenStreetMap
 		TileFactoryInfo info = new OSMTileFactoryInfo();
@@ -131,18 +126,30 @@ public class App {
 				String prevQuake = "";
 				PlaySound ps = new PlaySound();
 				boolean tsunamiMode = false;
+				
 
 				try {
 					while (true) {
 						logFile.logInfo("Thread2 working...");
 						FetchEQData fetch = new FetchEQData();
+						
+						//waypoints to render
+						Set<MyWaypoint> waypoints = new HashSet<MyWaypoint>();
+
 						List<Earthquake> quakesList = fetch.fetchData();
+						
 
 						if (quakesList.size() > 0) {
 							
 							Earthquake recentQuake = quakesList.get(0);
 							prevQuake = recentQuake.getTitle();
+							
+							GeoPosition recentQuakePos = new GeoPosition(quakesList.get(0).getLat(),
+									quakesList.get(0).getLon());
+							MyWaypoint wp = new MyWaypoint("M" + recentQuake.getMag(), Color.RED, recentQuakePos);
+							waypoints.add(wp);
 
+							//check if we need to play a sound
 							logFile.logInfo("Got Recent Earthquake data quakesList size is " + quakesList.size());
 							if (recentQuake.getMag() >= 4.0 && recentQuake.getMag() <= 4.9) {
 								ps.playNewEarthquakeSound();
@@ -167,13 +174,13 @@ public class App {
 
 							DefaultListModel<String> listModel = new DefaultListModel<String>();
 
-							for (int i = 0; i < quakesList.size(); i++) {
+							for (int i = 1; i < quakesList.size(); i++) {
 								Earthquake quake = quakesList.get(i);
 								String name = quake.getTimeEarthquakeHappened() + "\n M" + quake.getMag() + " "
 										+ quake.getTitle() + "\n";
 								if (!tsunamiMode && quake.generatedTsunami() && quake.getMag() >= 6.5) {
 									name += "Potential Tsunami! Check tsunami.gov for more info\n";
-									tf.setText(name);
+									tf.setText("Most Recent Earthquake: " + name);
 									tf.setBackground(Color.RED);
 									frame.revalidate();
 									frame.repaint();
@@ -181,13 +188,18 @@ public class App {
 									tsunamiMode = true;
 									break;
 								} else if (!tsunamiMode && recentQuake.getMag() >= 5.0) {
-									tf.setText(recentQuake.getTimeEarthquakeHappened() + " M" + recentQuake.getMag() + " " + recentQuake.getTitle());
+									tf.setText("Most Recent Earthquake: " + recentQuake.getTimeEarthquakeHappened() + " M" + recentQuake.getMag() + " " + recentQuake.getTitle());
 									tf.setBackground(Color.YELLOW);
 								} else if (!tsunamiMode) {
-									tf.setText(recentQuake.getTimeEarthquakeHappened() + " M" + recentQuake.getMag() + " " + recentQuake.getTitle());
+									tf.setText("Most Recent Earthquake: " + recentQuake.getTimeEarthquakeHappened() + " M" + recentQuake.getMag() + " " + recentQuake.getTitle());
 									tf.setBackground(Color.GREEN);
 								}
 								listModel.addElement(name);
+								
+								GeoPosition quakePos = new GeoPosition(quakesList.get(i).getLat(),
+										quakesList.get(i).getLon());
+								MyWaypoint wp2 = new MyWaypoint("M" + quake.getMag(), Color.YELLOW, quakePos);
+								waypoints.add(wp2);
 							}
 
 							displayRecentEarthquakes.setModel(listModel);
@@ -196,33 +208,20 @@ public class App {
 							listScroller.setViewportView(displayRecentEarthquakes);
 
 							displayRecentEarthquakes.setLayoutOrientation(JList.VERTICAL);
-							GeoPosition recentQuakePos = new GeoPosition(quakesList.get(0).getLat(),
-									quakesList.get(0).getLon());
-
+							
 							mapViewer.setAddressLocation(recentQuakePos);
 							frame.add(listScroller, BorderLayout.EAST);
 
-							frame.validate();
-							frame.repaint();
-
-							// draw waypoints
-							MyWaypoint wp = new MyWaypoint("Home", Color.orange, recentQuakePos);
-
-							Set<MyWaypoint> waypoints = new HashSet<MyWaypoint>(Arrays.asList(wp));
-
-							WaypointPainter<Waypoint> waypointPainter = new WaypointPainter<Waypoint>();
+							//draw waypoints							
+							WaypointPainter<MyWaypoint> waypointPainter = new WaypointPainter<MyWaypoint>();
 							waypointPainter.setWaypoints(waypoints);
 
-							List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();
-							painters.add(waypointPainter);
-							CompoundPainter<JXMapViewer> painter = new CompoundPainter<JXMapViewer>(painters);
-							mapViewer.setOverlayPainter(painter);
-
+							waypointPainter.setRenderer(new FancyWaypointRenderer());
+							mapViewer.setOverlayPainter(waypointPainter);
+							
 							frame.revalidate();
 							frame.repaint();
 
-							mapViewer.repaint();
-							mapViewer.revalidate();
 
 							logFile.logInfo("Done updating map sleeping...");
 						}else {
@@ -245,14 +244,14 @@ public class App {
 		fetchAndDraw.start();
 
 		mapMenuItem.addActionListener((e) -> {
-			mapViewer.setZoom(13);
+			mapViewer.setZoom(DEFAULT_ZOOM);
 			GeoPosition pos = mapViewer.getAddressLocation();
 			mapViewer.setAddressLocation(pos);
 
 		});
 
 		// Set the map focus
-		mapViewer.setZoom(13);
+		mapViewer.setZoom(DEFAULT_ZOOM);
 
 		// Add interactions
 		MouseInputListener mia = new PanMouseInputListener(mapViewer);
