@@ -137,83 +137,100 @@ public class App {
 						logFile.logInfo("Thread2 working...");
 						FetchEQData fetch = new FetchEQData();
 						List<Earthquake> quakesList = fetch.fetchData();
-						Earthquake recentQuake = quakesList.get(0);
-						prevQuake = recentQuake.getTitle();
 
-						logFile.logInfo("Got Recent Earthquake data quakesList size is` " + quakesList.size());
-						if (recentQuake.getMag() >= 4.0 && recentQuake.getMag() <= 4.9) {
-							ps.playNewEarthquakeSound();
+						if (quakesList.size() > 0) {
+							
+							Earthquake recentQuake = quakesList.get(0);
+							prevQuake = recentQuake.getTitle();
 
-							logFile.logInfo("An Earthquake between Mag 4.0 to 4.9 occurred!");
-						}
-
-						if (recentQuake.getMag() >= 5.0 && recentQuake.getMag() <= 5.9) {
-							ps.playMag5Sound();
-							logFile.logInfo("An Earthquake between Mag 5.0 to 5.9 occurred!");
-
-						}
-						if (recentQuake.getMag() >= 6.0 && recentQuake.getMag() <= 6.9) {
-							logFile.logInfo("An Earthquake between Mag 6.0 to 6.9 occurred!");
-
-							ps.playMag6Sound();
-						}
-						if (recentQuake.getMag() >= 7.0) {
-							ps.playMag7Sound();
-							logFile.logInfo("An Earthquake between Mag 7.0 or higher occurred!");
-
-						}
-
-						DefaultListModel<String> listModel = new DefaultListModel<String>();
-
-						for (int i = 0; i < quakesList.size(); i++) {
-							Earthquake quake = quakesList.get(i);
-							String name = quake.getTimeEarthquakeHappened() + "\n M" + quake.getMag() + " "
-									+ quake.getTitle() + "\n";
-							if (!tsunamiMode && quake.generatedTsunami() && i == 0 && quake.getMag() > 6.5) {
-								name += "Potential Tsunami! Check tsunami.gov for more info\n";
-								tf.setText(name);
-								tf.setBackground(Color.RED);
-								frame.toFront();
-								frame.revalidate();
-								frame.repaint();
-								logFile.logInfo("Possible Tsunami Detected!!!");
-								tsunamiMode = true;
-								break;
-							} else if (!tsunamiMode) {
-								tf.setText("No Tsunami or Earthquake warnings currently active");
-								tf.setBackground(Color.GREEN);
+							logFile.logInfo("Got Recent Earthquake data quakesList size is " + quakesList.size());
+							if (recentQuake.getMag() >= 4.0 && recentQuake.getMag() <= 4.9) {
+								ps.playNewEarthquakeSound();
+								logFile.logInfo("An Earthquake between Mag 4.0 to 4.9 occurred!");
 							}
-							listModel.addElement(name);
+
+							if (recentQuake.getMag() >= 5.0 && recentQuake.getMag() <= 5.9) {
+								ps.playMag5Sound();
+								logFile.logInfo("An Earthquake between Mag 5.0 to 5.9 occurred!");
+
+							}
+							if (recentQuake.getMag() >= 6.0 && recentQuake.getMag() <= 6.9) {
+								logFile.logInfo("An Earthquake between Mag 6.0 to 6.9 occurred!");
+
+								ps.playMag6Sound();
+							}
+							if (recentQuake.getMag() >= 7.0) {
+								ps.playMag7Sound();
+								logFile.logInfo("An Earthquake between Mag 7.0 or higher occurred!");
+
+							}
+
+							DefaultListModel<String> listModel = new DefaultListModel<String>();
+
+							for (int i = 0; i < quakesList.size(); i++) {
+								Earthquake quake = quakesList.get(i);
+								String name = quake.getTimeEarthquakeHappened() + "\n M" + quake.getMag() + " "
+										+ quake.getTitle() + "\n";
+								if (!tsunamiMode && quake.generatedTsunami() && quake.getMag() >= 6.5) {
+									name += "Potential Tsunami! Check tsunami.gov for more info\n";
+									tf.setText(name);
+									tf.setBackground(Color.RED);
+									frame.revalidate();
+									frame.repaint();
+									logFile.logInfo("Possible Tsunami Detected!!!");
+									tsunamiMode = true;
+									break;
+								} else if (!tsunamiMode && recentQuake.getMag() >= 5.0) {
+									tf.setText(recentQuake.getTimeEarthquakeHappened() + " M" + recentQuake.getMag() + " " + recentQuake.getTitle());
+									tf.setBackground(Color.YELLOW);
+								} else if (!tsunamiMode) {
+									tf.setText(recentQuake.getTimeEarthquakeHappened() + " M" + recentQuake.getMag() + " " + recentQuake.getTitle());
+									tf.setBackground(Color.GREEN);
+								}
+								listModel.addElement(name);
+							}
+
+							displayRecentEarthquakes.setModel(listModel);
+							displayRecentEarthquakes.setSize(30, 60);
+							displayRecentEarthquakes.setFont(new Font("Serif", Font.BOLD, 12));
+							listScroller.setViewportView(displayRecentEarthquakes);
+
+							displayRecentEarthquakes.setLayoutOrientation(JList.VERTICAL);
+							GeoPosition recentQuakePos = new GeoPosition(quakesList.get(0).getLat(),
+									quakesList.get(0).getLon());
+
+							mapViewer.setAddressLocation(recentQuakePos);
+							frame.add(listScroller, BorderLayout.EAST);
+
+							frame.validate();
+							frame.repaint();
+
+							// draw waypoints
+							MyWaypoint wp = new MyWaypoint("Home", Color.orange, recentQuakePos);
+
+							Set<MyWaypoint> waypoints = new HashSet<MyWaypoint>(Arrays.asList(wp));
+
+							WaypointPainter<Waypoint> waypointPainter = new WaypointPainter<Waypoint>();
+							waypointPainter.setWaypoints(waypoints);
+
+							List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();
+							painters.add(waypointPainter);
+							CompoundPainter<JXMapViewer> painter = new CompoundPainter<JXMapViewer>(painters);
+							mapViewer.setOverlayPainter(painter);
+
+							frame.revalidate();
+							frame.repaint();
+
+							mapViewer.repaint();
+							mapViewer.revalidate();
+
+							logFile.logInfo("Done updating map sleeping...");
+						}else {
+							logFile.logError("Unable to fetch recent earthquake data! Trying again in 3 minutes");
 						}
-
-						displayRecentEarthquakes.setModel(listModel);
-						displayRecentEarthquakes.setSize(30, 60);
-						displayRecentEarthquakes.setFont(new Font("Serif", Font.BOLD, 12));
-						listScroller.setViewportView(displayRecentEarthquakes);
-
-						displayRecentEarthquakes.setLayoutOrientation(JList.VERTICAL);
-						GeoPosition recentQuakePos = new GeoPosition(quakesList.get(0).getLat(),
-								quakesList.get(0).getLon());
-						mapViewer.setAddressLocation(recentQuakePos);
-						frame.add(listScroller, BorderLayout.EAST);
-
-						frame.revalidate();
-						frame.repaint();
-
-						// draw waypoints
-						MyWaypoint wp = new MyWaypoint("Home", Color.orange, recentQuakePos);
-
-						Set<MyWaypoint> waypoints = new HashSet<MyWaypoint>(Arrays.asList(wp));
-
-						WaypointPainter<Waypoint> waypointPainter = new WaypointPainter<Waypoint>();
-						waypointPainter.setWaypoints(waypoints);
-
-						List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();
-						painters.add(waypointPainter);
-						CompoundPainter<JXMapViewer> painter = new CompoundPainter<JXMapViewer>(painters);
-						mapViewer.setOverlayPainter(painter);
 
 						Thread.sleep(180000); // 180000 = 3 minutes 300000 = 5 minutes
+
 					}
 
 				} catch (InterruptedException e) {

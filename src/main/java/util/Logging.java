@@ -41,6 +41,10 @@ public class Logging {
 	    logger.info(message);  
 	}
 	
+	public void logWarn(String message) {
+		logger.warning(message);
+	}
+	
 	public void logError(String message) {
 	    logger.severe(message);
 	}

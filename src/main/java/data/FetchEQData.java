@@ -28,27 +28,22 @@ public class FetchEQData {
 
 	public List<Earthquake> fetchData() throws Exception {
 
+		List<Earthquake> quakes = new ArrayList<Earthquake>();
+
 		// sending the http get request to the usgs api
 		String url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=" + getCurrentDate() + "&endtime&minmagnitude=1";
-
-		//String url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2020-07-22&endtime=2020-07-23&minmagnitude=7";
-		//tsunami test query 
-		//https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2020-07-22&endtime=2020-07-23&minmagnitude=7
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		con.setRequestProperty("User-Agent", USER_AGENT);
 		int responseCode = con.getResponseCode();
 
 		if (responseCode != 200) {
-			System.err.println("The api return an error!");
+			return quakes;
 		}
-
-		System.out.println(con.getContentType());
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 		String inputLine;
 		StringBuffer response = new StringBuffer();
-		Gson g = new Gson();
 
 		while ((inputLine = in.readLine()) != null) {
 			response.append(inputLine + "\n");
@@ -59,7 +54,6 @@ public class FetchEQData {
 		JsonObject jsonObject = JsonParser.parseString(response.toString()).getAsJsonObject();
 		JsonArray j2Array = jsonObject.get("features").getAsJsonArray();
 
-		List<Earthquake> quakes = new ArrayList<Earthquake>();
 
 		for (int i = 0; i < j2Array.size(); i++) {
 
