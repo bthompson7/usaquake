@@ -58,6 +58,17 @@ public class PlaySound {
 
 	}
 	
+	public void playMag4Sound() {
+		URL url = getClass().getResource("/resources/Mag4.wav");
+		loadSoundEffect(url);
+		if (clip.isRunning()) {
+			clip.stop();
+		}
+		clip.setFramePosition(0); 
+		clip.start();
+
+	}
+	
 	public void playMag5Sound() {
 		URL url = getClass().getResource("/resources/Mag5.wav");
 		loadSoundEffect(url);

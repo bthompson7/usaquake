@@ -10,8 +10,6 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,6 +20,7 @@ import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -36,17 +35,15 @@ import org.jxmapviewer.input.CenterMapListener;
 import org.jxmapviewer.input.PanKeyListener;
 import org.jxmapviewer.input.PanMouseInputListener;
 import org.jxmapviewer.input.ZoomMouseWheelListenerCursor;
-import org.jxmapviewer.painter.CompoundPainter;
-import org.jxmapviewer.painter.Painter;
 import org.jxmapviewer.viewer.DefaultTileFactory;
 import org.jxmapviewer.viewer.GeoPosition;
 import org.jxmapviewer.viewer.TileFactoryInfo;
-import org.jxmapviewer.viewer.Waypoint;
 import org.jxmapviewer.viewer.WaypointPainter;
 
 import data.FetchEQData;
 import model.Earthquake;
 import sound.PlaySound;
+import util.Constants;
 import util.Logging;
 
 public class App {
@@ -92,14 +89,13 @@ public class App {
 		mapViewer.setTileFactory(tileFactory);
 
 		JTextField tf = new JTextField();
-		tf.setText("No warnings currently active");
 		tf.setEditable(false);
-		tf.setBackground(Color.GREEN);
+		tf.setFont(new Font(null, Font. BOLD,16));
 
 		// add menuItem to menuBar
 		JMenuItem aboutMenuItem = new JMenuItem("Settings", KeyEvent.VK_T);
 
-		JMenuItem mapMenuItem = new JMenuItem("Reset Zoom");
+		JMenuItem mapMenuItem = new JMenuItem("Reset Location & Zoom");
 
 		aboutMenuItem.addActionListener((e) -> {
 
@@ -119,6 +115,7 @@ public class App {
 
 		final JList<String> displayRecentEarthquakes = new JList<String>();
 		final JScrollPane listScroller = new JScrollPane();
+		
 		// thread that fetches the data and draws it every 3 minutes (might change
 		// later)
 		Thread fetchAndDraw = new Thread() {
@@ -143,6 +140,7 @@ public class App {
 							
 							Earthquake recentQuake = quakesList.get(0);
 							prevQuake = recentQuake.getTitle();
+							logFile.logInfo("Most Recent Quake is " + recentQuake.getTitle());
 							
 							GeoPosition recentQuakePos = new GeoPosition(quakesList.get(0).getLat(),
 									quakesList.get(0).getLon());
@@ -152,7 +150,7 @@ public class App {
 							//check if we need to play a sound
 							logFile.logInfo("Got Recent Earthquake data quakesList size is " + quakesList.size());
 							if (recentQuake.getMag() >= 4.0 && recentQuake.getMag() <= 4.9) {
-								ps.playNewEarthquakeSound();
+								ps.playMag4Sound();
 								logFile.logInfo("An Earthquake between Mag 4.0 to 4.9 occurred!");
 							}
 
@@ -182,17 +180,15 @@ public class App {
 									name += "Potential Tsunami! Check tsunami.gov for more info\n";
 									tf.setText("Most Recent Earthquake: " + name);
 									tf.setBackground(Color.RED);
-									frame.revalidate();
-									frame.repaint();
 									logFile.logInfo("Possible Tsunami Detected!!!");
 									tsunamiMode = true;
 									break;
 								} else if (!tsunamiMode && recentQuake.getMag() >= 5.0) {
 									tf.setText("Most Recent Earthquake: " + recentQuake.getTimeEarthquakeHappened() + " M" + recentQuake.getMag() + " " + recentQuake.getTitle());
-									tf.setBackground(Color.YELLOW);
+									tf.setBackground(Color.ORANGE);
 								} else if (!tsunamiMode) {
 									tf.setText("Most Recent Earthquake: " + recentQuake.getTimeEarthquakeHappened() + " M" + recentQuake.getMag() + " " + recentQuake.getTitle());
-									tf.setBackground(Color.GREEN);
+									tf.setBackground(Color.WHITE);
 								}
 								listModel.addElement(name);
 								
@@ -206,9 +202,7 @@ public class App {
 							displayRecentEarthquakes.setSize(30, 60);
 							displayRecentEarthquakes.setFont(new Font("Serif", Font.BOLD, 12));
 							listScroller.setViewportView(displayRecentEarthquakes);
-
 							displayRecentEarthquakes.setLayoutOrientation(JList.VERTICAL);
-							
 							mapViewer.setAddressLocation(recentQuakePos);
 							frame.add(listScroller, BorderLayout.EAST);
 
@@ -219,6 +213,8 @@ public class App {
 							waypointPainter.setRenderer(new FancyWaypointRenderer());
 							mapViewer.setOverlayPainter(waypointPainter);
 							
+							panel.revalidate();
+							panel.repaint();
 							frame.revalidate();
 							frame.repaint();
 
@@ -226,6 +222,7 @@ public class App {
 							logFile.logInfo("Done updating map sleeping...");
 						}else {
 							logFile.logError("Unable to fetch recent earthquake data! Trying again in 3 minutes");
+							JOptionPane.showMessageDialog(frame, "Unable to fetch data. Trying again in 3 minutes", "Error", JOptionPane.ERROR_MESSAGE);
 						}
 
 						Thread.sleep(180000); // 180000 = 3 minutes 300000 = 5 minutes
@@ -291,6 +288,6 @@ public class App {
 		int zoom = mapViewer.getZoom();
 
 		frame.setTitle(
-				String.format("USAQuake (Alpha v0.1) | Latitude: %.2f / Longitude %.2f | Zoom: %d", lat, lon, zoom));
+				String.format("USAQuake " + Constants.getVersion() + " | Latitude: %.2f / Longitude %.2f | Zoom: %d", lat, lon, zoom));
 	}
 }

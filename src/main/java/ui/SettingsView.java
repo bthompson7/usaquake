@@ -1,5 +1,7 @@
 package ui;
 
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -13,6 +15,7 @@ import javax.swing.JTabbedPane;
 import org.apache.commons.configuration.ConfigurationException;
 
 import sound.PlaySound;
+import util.Constants;
 
 public class SettingsView {
 
@@ -32,13 +35,13 @@ public class SettingsView {
         
         //tab1 panel handles general information
         JLabel label = new JLabel();
-        label.setText("USAQuake v0.1");
+        label.setText("USAQuake " + Constants.getVersion());
         JLabel label2 = new JLabel();
         label2.setText("About: USAQuake displays recent earthquakes on a map.");
-        
         JLabel label3 = new JLabel();
         label3.setText("App Navigation: Use left mouse button to pan, mouse wheel to zoom");
         JPanel tab1Panel = new JPanel();
+        tab1Panel.setLayout(new GridLayout(3,1));
         tab1Panel.add(label);
         tab1Panel.add(label2);
         tab1Panel.add(label3);

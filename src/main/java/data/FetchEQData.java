@@ -7,7 +7,9 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -20,10 +22,15 @@ import model.Earthquake;
 public class FetchEQData {
 
 	private final static String USER_AGENT = "Mozilla/5.0";
+	private static Map<String, String> mapOfStates = new HashMap<String, String>();
+	private static String[] states = { "CA", "California", "Alaska", "Nevada", "Hawaii", "Oregon", "Washington",
+			"Montana", "Idaho", "Texas", "Wyoming", "Utah", "New Mexico", "Colorado", "Oklahoma", "OK", "Maine", "ME",
+			"Kansas"};
 
-	
 	public FetchEQData() {
-
+		for (int i = 0; i < states.length; i++) {
+			mapOfStates.put(states[i], null);
+		}
 	}
 
 	public List<Earthquake> fetchData() throws Exception {
@@ -31,7 +38,8 @@ public class FetchEQData {
 		List<Earthquake> quakes = new ArrayList<Earthquake>();
 
 		// sending the http get request to the usgs api
-		String url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=" + getCurrentDate() + "&endtime&minmagnitude=1";
+		String url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=" + getCurrentDate()
+				+ "&endtime&minmagnitude=1";
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		con.setRequestProperty("User-Agent", USER_AGENT);
@@ -54,29 +62,21 @@ public class FetchEQData {
 		JsonObject jsonObject = JsonParser.parseString(response.toString()).getAsJsonObject();
 		JsonArray j2Array = jsonObject.get("features").getAsJsonArray();
 
-
 		for (int i = 0; i < j2Array.size(); i++) {
 
 			JsonObject features = j2Array.get(i).getAsJsonObject();
 			JsonObject properties = features.get("properties").getAsJsonObject();// info about the earthquake
 			JsonObject loc = features.get("geometry").getAsJsonObject();
 
-			String quakeLocation = properties.get("place").toString();
+			String quakeLocation = properties.get("place").getAsString();
 			if (isUSAQuake(quakeLocation)) {
 				Earthquake eq = new Earthquake();
-				/*
-				 * cords example because it confused me:
-				 * 
-				 * we get -> [161.3486,55.7276,81.56] latitude / longitude: 55.7276°N /
-				 * 161.3486°E
-				 */
 				JsonArray cords = loc.get("coordinates").getAsJsonArray();
 				eq.setLat(cords.get(1).getAsDouble());
 				eq.setLon(cords.get(0).getAsDouble());
-				
 				eq.setTimeEarthquakeHappened(eq.unixTimeToDate(properties.get("time").getAsLong()));
-				
 				eq.setTitle(quakeLocation);
+
 				if (properties.get("tsunami").getAsInt() == 1) {
 					eq.setGeneratedTsunami(true);
 				} else {
@@ -90,16 +90,13 @@ public class FetchEQData {
 	}
 
 	private static boolean isUSAQuake(String str) {
-		if (str.contains("CA") || str.contains("California") || str.contains("Alaska") || str.contains("Nevada") || str.contains("Hawaii")
-				|| str.contains("Oregon") || str.contains("Washington") || str.contains("Montana") || str.contains("Idaho")
-				|| str.contains("Texas") || str.contains("Wyoming") || str.contains("Utah") || str.contains("New Mexico")) {
+		String[] words = str.split(" ");
+		if (mapOfStates.containsKey(words[words.length - 1])) {
 			return true;
 		}
-
 		return false;
 	}
-	
-	
+
 	private static String getCurrentDate() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		return LocalDate.now().format(formatter);
