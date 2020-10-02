@@ -225,7 +225,7 @@ public class App {
 							JOptionPane.showMessageDialog(frame, "Unable to fetch data. Trying again in 3 minutes", "Error", JOptionPane.ERROR_MESSAGE);
 						}
 
-						Thread.sleep(180000); // 180000 = 3 minutes 300000 = 5 minutes
+						Thread.sleep(120000); //120000 = 2 minutes 180000 = 3 minutes 300000 = 5 minutes
 
 					}
 

@@ -21,9 +21,7 @@ public class Logging {
 	private void init() {
 	    try {  
 	    	
-	        SimpleDateFormat format = new SimpleDateFormat("M-d_H:Hmm:ss");
-	        	        
-	        
+	        SimpleDateFormat format = new SimpleDateFormat("MdHHmmss");
 	        fh = new FileHandler("USAQuake "  + format.format(Calendar.getInstance().getTime()) + ".log");  
 	        logger.addHandler(fh);
 	        SimpleFormatter formatter = new SimpleFormatter();  
