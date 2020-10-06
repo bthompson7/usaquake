@@ -39,7 +39,7 @@ public class FetchEQData {
 
 		// sending the http get request to the usgs api
 		String url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=" + getCurrentDate()
-				+ "&endtime&minmagnitude=1";
+				+ "&endtime&minmagnitude=1.5";
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		con.setRequestProperty("User-Agent", USER_AGENT);
@@ -72,11 +72,15 @@ public class FetchEQData {
 			if (isUSAQuake(quakeLocation)) {
 				Earthquake eq = new Earthquake();
 				JsonArray cords = loc.get("coordinates").getAsJsonArray();
+				
+				//set the fields
 				eq.setLat(cords.get(1).getAsDouble());
 				eq.setLon(cords.get(0).getAsDouble());
 				eq.setTimeEarthquakeHappened(eq.unixTimeToDate(properties.get("time").getAsLong()));
 				eq.setTitle(quakeLocation);
-
+				eq.setHour(eq.unixHour(properties.get("time").getAsLong()));
+				eq.setDay(eq.unixDay(properties.get("time").getAsLong()));
+				
 				if (properties.get("tsunami").getAsInt() == 1) {
 					eq.setGeneratedTsunami(true);
 				} else {
@@ -98,7 +102,7 @@ public class FetchEQData {
 	}
 
 	private static String getCurrentDate() {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-YYYY");
 		return LocalDate.now().format(formatter);
 	}
 

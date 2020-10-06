@@ -7,15 +7,15 @@ import java.util.TimeZone;
 
 public class Earthquake {
 
-	
 	private double lat;
 	private double lon;
 	private String title;
 	private double mag;
 	private boolean generatedTsunami;
 	private String timeEarthquakeHappened;
-	
-	
+	private String hour;
+	private String day;
+
 	public String getTimeEarthquakeHappened() {
 		return timeEarthquakeHappened;
 	}
@@ -25,9 +25,9 @@ public class Earthquake {
 	}
 
 	public Earthquake() {
-		
+
 	}
-	
+
 	public boolean generatedTsunami() {
 		return generatedTsunami;
 	}
@@ -39,37 +39,79 @@ public class Earthquake {
 	public double getLat() {
 		return lat;
 	}
+
 	public void setLat(double lat) {
 		this.lat = lat;
 	}
+
 	public double getLon() {
 		return lon;
 	}
+
 	public void setLon(double lon) {
 		this.lon = lon;
 	}
+
 	public String getTitle() {
 		return title;
 	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
 	public double getMag() {
 		return mag;
 	}
+
 	public void setMag(double mag) {
 		this.mag = mag;
 	}
 	
-	public String unixTimeToDate(long epoch) {
-		   Date date = new Date(epoch);
-		   DateFormat formatter = new SimpleDateFormat("MM:dd:YYYY:HH:mm:ss");
-		   formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-		   String dateFormatted = formatter.format(date);
-		   return dateFormatted;
+	public String getHour() {
+		return hour;
+	}
+
+	public void setHour(String hour) {
+		this.hour = hour;
+	}
+
+
+	public String getDay() {
+		return day;
+	}
+
+	public void setDay(String day) {
+		this.day = day;
+	}
+
 	
-		
+	public String unixTimeToDate(long epoch) {
+		Date date = new Date(epoch);
+		DateFormat formatter = new SimpleDateFormat("MM-dd-YYYY:HH:mm:ss");
+		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+		String dateFormatted = formatter.format(date);
+		return dateFormatted;
+
 	}
 	
+	public String unixHour(long epoch) {
+		Date date = new Date(epoch);
+		DateFormat formatter = new SimpleDateFormat("HH");
+		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+		String hour = formatter.format(date);
+		return hour;
+
+	}
 	
+	public String unixDay(long epoch){
+		Date date = new Date(epoch);
+		DateFormat formatter = new SimpleDateFormat("MM-dd-YYYY");
+		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+		String day = formatter.format(date);
+		return day;
+	}
+
+
+
 }

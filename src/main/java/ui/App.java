@@ -8,11 +8,16 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
@@ -53,6 +58,8 @@ public class App {
 	 * 
 	 * This app has been tested on and will work on (but should work on any device
 	 * with java installed): -> Windows 10 64 Bit -> Ubuntu 18.04.5 LTS
+	 * 
+	 * 
 	 */
 
 	private static final int DEFAULT_ZOOM = 11;
@@ -95,7 +102,8 @@ public class App {
 		// add menuItem to menuBar
 		JMenuItem aboutMenuItem = new JMenuItem("Settings", KeyEvent.VK_T);
 
-		JMenuItem mapMenuItem = new JMenuItem("Reset Location & Zoom");
+		JMenuItem resetMapLoc = new JMenuItem("Reset Location & Zoom to default");
+		JMenuItem exportEarthquakesItem = new JMenuItem("Export Earthquakes to File");
 
 		aboutMenuItem.addActionListener((e) -> {
 
@@ -106,7 +114,9 @@ public class App {
 			}
 		});
 		aboutMenu.add(aboutMenuItem);
-		mapMenu.add(mapMenuItem);
+		mapMenu.add(resetMapLoc);
+		mapMenu.add(exportEarthquakesItem);
+		
 
 		JPanel panel = new JPanel(new GridLayout(0, 1));
 		panel.add(menuBar);
@@ -135,6 +145,27 @@ public class App {
 
 						List<Earthquake> quakesList = fetch.fetchData();
 						
+						exportEarthquakesItem.addActionListener((e) -> {
+							//create file
+							try {
+							      FileWriter file = new FileWriter("Earthquakes.txt");
+								for (int i = 0; i < quakesList.size(); i++) {
+									Earthquake quake = quakesList.get(i);
+									String name = quake.getTimeEarthquakeHappened() + " M" + quake.getMag() + " "
+											+ quake.getTitle() + "\n";
+									file.write(name);
+								}
+								file.close();
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+								logFile.logError("Error when writing to Earthquake file");
+							}
+						
+							JOptionPane.showMessageDialog(frame, "All Earthquakes have been exported!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+							
+						});
 
 						if (quakesList.size() > 0) {
 							
@@ -194,8 +225,21 @@ public class App {
 								
 								GeoPosition quakePos = new GeoPosition(quakesList.get(i).getLat(),
 										quakesList.get(i).getLon());
-								MyWaypoint wp2 = new MyWaypoint("M" + quake.getMag(), Color.YELLOW, quakePos);
-								waypoints.add(wp2);
+								
+								
+								if(quake.getHour().equals(getCurrentUnixHour()) && quake.getDay().equals(getCurrentDay())) {
+									MyWaypoint wp2 = new MyWaypoint("M" + quake.getMag(), Color.GREEN, quakePos);
+									waypoints.add(wp2);
+
+
+								}else{
+									MyWaypoint wp2 = new MyWaypoint("M" + quake.getMag(), Color.YELLOW, quakePos);
+									waypoints.add(wp2);
+
+
+								}
+								
+								
 							}
 
 							displayRecentEarthquakes.setModel(listModel);
@@ -240,12 +284,14 @@ public class App {
 
 		fetchAndDraw.start();
 
-		mapMenuItem.addActionListener((e) -> {
+		resetMapLoc.addActionListener((e) -> {
 			mapViewer.setZoom(DEFAULT_ZOOM);
 			GeoPosition pos = mapViewer.getAddressLocation();
 			mapViewer.setAddressLocation(pos);
 
 		});
+		
+
 
 		// Set the map focus
 		mapViewer.setZoom(DEFAULT_ZOOM);
@@ -290,4 +336,29 @@ public class App {
 		frame.setTitle(
 				String.format("USAQuake " + Constants.getVersion() + " | Latitude: %.2f / Longitude %.2f | Zoom: %d", lat, lon, zoom));
 	}
+	
+	
+	private static String getCurrentUnixHour() {
+		long unixTime = System.currentTimeMillis();;
+		Date date = new Date(unixTime);
+		DateFormat formatter = new SimpleDateFormat("HH");
+		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+		String hour = formatter.format(date);
+		return hour;
+		
+	}
+	
+	private static String getCurrentDay() {
+		long unixTime = System.currentTimeMillis();;
+		Date date = new Date(unixTime);
+		DateFormat formatter = new SimpleDateFormat("MM-dd-YYYY");
+		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+		String day = formatter.format(date);
+		return day;
+	}
+	
+	
+	
+	
+	
 }
