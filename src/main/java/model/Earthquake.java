@@ -15,6 +15,7 @@ public class Earthquake {
 	private String timeEarthquakeHappened;
 	private String hour;
 	private String day;
+	private long unixTime;
 
 	public String getTimeEarthquakeHappened() {
 		return timeEarthquakeHappened;
@@ -85,6 +86,16 @@ public class Earthquake {
 		this.day = day;
 	}
 
+	public long getUnixTime() {
+		return unixTime;
+	}
+
+	public void setUnixTime(long unixTime) {
+		this.unixTime = unixTime;
+	}
+
+	
+	
 	
 	public String unixTimeToDate(long epoch) {
 		Date date = new Date(epoch);
@@ -112,6 +123,7 @@ public class Earthquake {
 		return day;
 	}
 
+	
 
 
 }

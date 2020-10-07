@@ -63,6 +63,7 @@ public class App {
 	 */
 
 	private static final int DEFAULT_ZOOM = 11;
+	private static final long ONE_UNIX_HOUR = 3600000;
 	public static void main(String[] args) throws Exception {
 		// Create a TileFactoryInfo for OpenStreetMap
 		TileFactoryInfo info = new OSMTileFactoryInfo();
@@ -227,7 +228,7 @@ public class App {
 										quakesList.get(i).getLon());
 								
 								
-								if(quake.getHour().equals(getCurrentUnixHour()) && quake.getDay().equals(getCurrentDay())) {
+								if(getCurrentUnixTime() - quake.getUnixTime() <= ONE_UNIX_HOUR && quake.getDay().equals(getCurrentDay())) {
 									MyWaypoint wp2 = new MyWaypoint("M" + quake.getMag(), Color.GREEN, quakePos);
 									waypoints.add(wp2);
 
@@ -344,17 +345,22 @@ public class App {
 		DateFormat formatter = new SimpleDateFormat("HH");
 		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 		String hour = formatter.format(date);
+		System.out.println(hour);
 		return hour;
 		
 	}
 	
 	private static String getCurrentDay() {
-		long unixTime = System.currentTimeMillis();;
+		long unixTime = System.currentTimeMillis();
 		Date date = new Date(unixTime);
 		DateFormat formatter = new SimpleDateFormat("MM-dd-YYYY");
 		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 		String day = formatter.format(date);
 		return day;
+	}
+	
+	private static long getCurrentUnixTime() {
+		return System.currentTimeMillis();
 	}
 	
 	
