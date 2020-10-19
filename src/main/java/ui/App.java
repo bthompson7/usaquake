@@ -208,17 +208,15 @@ public class App {
 								Earthquake quake = quakesList.get(i);
 								String name = quake.getTimeEarthquakeHappened() + "\n M" + quake.getMag() + " "
 										+ quake.getTitle() + "\n";
-								if (!tsunamiMode && quake.generatedTsunami() && quake.getMag() >= 6.5) {
-									name += "Potential Tsunami! Check tsunami.gov for more info\n";
+								if (quake.generatedTsunami() && quake.getMag() >= 6.5) {
+									name += " Possible Tsunami Detected";
 									tf.setText("Most Recent Earthquake: " + name);
 									tf.setBackground(Color.RED);
 									logFile.logInfo("Possible Tsunami Detected!!!");
-									tsunamiMode = true;
-									break;
-								} else if (!tsunamiMode && recentQuake.getMag() >= 5.0) {
+								} else if (recentQuake.getMag() >= 5.0) {
 									tf.setText("Most Recent Earthquake: " + recentQuake.getTimeEarthquakeHappened() + " M" + recentQuake.getMag() + " " + recentQuake.getTitle());
 									tf.setBackground(Color.ORANGE);
-								} else if (!tsunamiMode) {
+								} else{
 									tf.setText("Most Recent Earthquake: " + recentQuake.getTimeEarthquakeHappened() + " M" + recentQuake.getMag() + " " + recentQuake.getTitle());
 									tf.setBackground(Color.WHITE);
 								}
@@ -229,7 +227,7 @@ public class App {
 								
 								
 								if(getCurrentUnixTime() - quake.getUnixTime() <= ONE_UNIX_HOUR && quake.getDay().equals(getCurrentDay())) {
-									MyWaypoint wp2 = new MyWaypoint("M" + quake.getMag(), Color.GREEN, quakePos);
+									MyWaypoint wp2 = new MyWaypoint("M" + quake.getMag(), Color.GREEN	, quakePos);
 									waypoints.add(wp2);
 
 
