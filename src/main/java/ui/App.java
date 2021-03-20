@@ -56,14 +56,17 @@ public class App {
 	/*
 	 * Main entry point for USAQuake
 	 * 
-	 * This app has been tested on and will work on (but should work on any device
-	 * with java installed): -> Windows 10 64 Bit -> Ubuntu 18.04.5 LTS
-	 * 
+	 * This app has been tested on and will work on the following Operating Systems (but should work on any device
+	 * with java installed):
+	 *  - Windows 10 64 Bit
+	 *  - Ubuntu 18.04.5 LTS
+	 *  - Ubuntu 20.04 LTS
 	 * 
 	 */
 
 	private static final int DEFAULT_ZOOM = 11;
 	private static final long ONE_UNIX_HOUR = 3600000;
+	
 	public static void main(String[] args) throws Exception {
 		// Create a TileFactoryInfo for OpenStreetMap
 		TileFactoryInfo info = new OSMTileFactoryInfo();
@@ -109,7 +112,7 @@ public class App {
 		aboutMenuItem.addActionListener((e) -> {
 
 			try {
-				SettingsView sv = new SettingsView();
+				new SettingsView();
 			} catch (IOException | URISyntaxException | ConfigurationException e1) {
 				e1.printStackTrace();
 			}
@@ -131,11 +134,7 @@ public class App {
 		// later)
 		Thread fetchAndDraw = new Thread() {
 			public void run() {
-				String prevQuake = "";
 				PlaySound ps = new PlaySound();
-				boolean tsunamiMode = false;
-				
-
 				try {
 					while (true) {
 						logFile.logInfo("Thread2 working...");
@@ -171,7 +170,7 @@ public class App {
 						if (quakesList.size() > 0) {
 							
 							Earthquake recentQuake = quakesList.get(0);
-							prevQuake = recentQuake.getTitle();
+							recentQuake.getTitle();
 							logFile.logInfo("Most Recent Quake is " + recentQuake.getTitle());
 							
 							GeoPosition recentQuakePos = new GeoPosition(quakesList.get(0).getLat(),
@@ -209,7 +208,7 @@ public class App {
 								String name = quake.getTimeEarthquakeHappened() + "\n M" + quake.getMag() + " "
 										+ quake.getTitle() + "\n";
 								if (quake.generatedTsunami() && quake.getMag() >= 6.5) {
-									name += " Possible Tsunami Detected";
+									name += " -Possible Tsunami Detected";
 									tf.setText("Most Recent Earthquake: " + name);
 									tf.setBackground(Color.RED);
 									logFile.logInfo("Possible Tsunami Detected!!!");

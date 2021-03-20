@@ -1,8 +1,6 @@
 package util;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -21,8 +19,8 @@ public class Logging {
 	private void init() {
 	    try {  
 	    	
-	        SimpleDateFormat format = new SimpleDateFormat("MdHHmmss");
-	        fh = new FileHandler("USAQuake "  + format.format(Calendar.getInstance().getTime()) + ".log");  
+	    	//true means we append to the end of the log file
+	        fh = new FileHandler("usaquake.log",true);  
 	        logger.addHandler(fh);
 	        SimpleFormatter formatter = new SimpleFormatter();  
 	        fh.setFormatter(formatter);  
