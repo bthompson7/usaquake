@@ -22,14 +22,15 @@ import model.Earthquake;
 public class FetchEQData {
 
 	private final static String USER_AGENT = "Mozilla/5.0";
-	private static Map<String, String> mapOfStates = new HashMap<String, String>();
-	private static String[] states = { "CA", "California", "Alaska", "Nevada", "Hawaii", "Oregon", "Washington",
+	private static Map<String, String> regions = new HashMap<String, String>();
+	private static String[] supported_regions = { "CA", "California", "Alaska", "Nevada", "Hawaii", "Oregon", "Washington",
 			"Montana", "Idaho", "Texas", "Wyoming", "Utah", "New Mexico", "Colorado", "Oklahoma", "OK", "Maine", "ME",
-			"Kansas"};
-
+			"Kansas", "Japan"};
+	
+	
 	public FetchEQData() {
-		for (int i = 0; i < states.length; i++) {
-			mapOfStates.put(states[i], null);
+		for (int i = 0; i < supported_regions.length; i++) {
+			regions.put(supported_regions[i], null);
 		}
 	}
 
@@ -69,7 +70,7 @@ public class FetchEQData {
 			JsonObject loc = features.get("geometry").getAsJsonObject();
 
 			String quakeLocation = properties.get("place").getAsString();
-			if (isUSAQuake(quakeLocation)) {
+			if (isQuakeFromSupportedRegion(quakeLocation)) {
 				Earthquake eq = new Earthquake();
 				JsonArray cords = loc.get("coordinates").getAsJsonArray();
 				
@@ -94,13 +95,12 @@ public class FetchEQData {
 		return quakes;
 	}
 
-	private static boolean isUSAQuake(String str) {
+	private static boolean isQuakeFromSupportedRegion(String str) {
 		String[] words = str.split(" ");
-		if (mapOfStates.containsKey(words[words.length - 1])) {
-			return true;
-		}
-		return false;
+		return regions.containsKey(words[words.length - 1]);
 	}
+	
+
 
 	private static String getCurrentDateForApi() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

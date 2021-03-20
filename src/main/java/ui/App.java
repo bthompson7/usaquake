@@ -157,9 +157,8 @@ public class App {
 								}
 								file.close();
 							} catch (IOException e1) {
-								// TODO Auto-generated catch block
 								e1.printStackTrace();
-								logFile.logError("Error when writing to Earthquake file");
+								logFile.logError("Error when writing to Earthquake file\n" + e1.getStackTrace());
 							}
 						
 							JOptionPane.showMessageDialog(frame, "All Earthquakes have been exported!", "Success", JOptionPane.INFORMATION_MESSAGE);

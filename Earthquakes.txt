@@ -1,0 +1,79 @@
+03-20-2021:21:36:17 M2.12 10km SE of Warner Springs, CA
+03-20-2021:21:19:46 M3.1 68 km SSW of Kaktovik, Alaska
+03-20-2021:20:51:17 M2.9 23 km WNW of Ambler, Alaska
+03-20-2021:20:51:07 M2.13 6 km SE of Ratliff City, Oklahoma
+03-20-2021:20:40:41 M1.9 34 km WSW of Petersville, Alaska
+03-20-2021:20:33:33 M1.6 22 km N of Valdez, Alaska
+03-20-2021:20:17:57 M2.73 4 km SE of Pāhala, Hawaii
+03-20-2021:20:05:28 M2.8 3 km SSE of Union City, Oklahoma
+03-20-2021:19:30:51 M2.00999999 Island of Hawaii, Hawaii
+03-20-2021:19:04:42 M2.32 2 km S of Pāhala, Hawaii
+03-20-2021:18:31:45 M2.0 40 km WSW of Healy, Alaska
+03-20-2021:18:21:15 M1.68 16km NW of Pinnacles, CA
+03-20-2021:18:11:47 M1.5 24 km S of Mina, Nevada
+03-20-2021:17:55:19 M2.77 19km SW of Toms Place, CA
+03-20-2021:17:41:30 M2.19 19km SW of Toms Place, CA
+03-20-2021:17:02:27 M1.8 69 km WSW of Cantwell, Alaska
+03-20-2021:16:41:16 M4.3 55 km ESE of Ishinomaki, Japan
+03-20-2021:16:39:59 M1.62 3km SE of Lake Henshaw, CA
+03-20-2021:16:37:11 M1.57 5km WSW of Milpitas, CA
+03-20-2021:16:09:50 M1.88 5 km SE of Pāhala, Hawaii
+03-20-2021:16:03:54 M4.9 24 km S of Nishinoomote, Japan
+03-20-2021:15:54:21 M2.39 8 km WSW of Isabella, Oklahoma
+03-20-2021:15:42:19 M2.35 6 km SE of Ratliff City, Oklahoma
+03-20-2021:15:37:07 M1.5 8 km NW of Cantwell, Alaska
+03-20-2021:15:15:16 M3.4 11 km N of Cantwell, Alaska
+03-20-2021:14:31:16 M2.5 11 km WSW of Point Possession, Alaska
+03-20-2021:14:21:35 M1.8 44 km N of Chase, Alaska
+03-20-2021:14:11:57 M2.1 63 km W of Tyonek, Alaska
+03-20-2021:14:00:09 M1.6 29 km SSE of Mina, Nevada
+03-20-2021:13:58:50 M2.2 57 km N of Petersville, Alaska
+03-20-2021:13:25:33 M2.0 10 km E of Pāhala, Hawaii
+03-20-2021:13:17:32 M1.7 45 km SE of Denali National Park, Alaska
+03-20-2021:13:01:02 M2.45 3 km SSE of Union City, Oklahoma
+03-20-2021:12:03:40 M1.7 17 km WNW of Nikiski, Alaska
+03-20-2021:12:01:32 M2.44000006 3 km E of Pāhala, Hawaii
+03-20-2021:12:00:30 M2.36 6km ESE of Lone Pine, CA
+03-20-2021:11:46:46 M2.01999998 2 km SSE of Pāhala, Hawaii
+03-20-2021:11:32:25 M1.57 14km NE of Coso Junction, CA
+03-20-2021:11:24:53 M1.9 51 km W of Happy Valley, Alaska
+03-20-2021:11:07:47 M2.3 3 km SSE of Union City, Oklahoma
+03-20-2021:10:43:43 M1.5 7 km W of Point MacKenzie, Alaska
+03-20-2021:10:37:10 M1.9 7 km SSE of Central, Alaska
+03-20-2021:10:33:32 M2.24 10 km SSE of Tatums, Oklahoma
+03-20-2021:10:24:41 M4.1 255 km SE of Chiniak, Alaska
+03-20-2021:10:00:18 M2.2 13 km SSE of Volcano, Hawaii
+03-20-2021:09:55:18 M2.7 3 km SE of Union City, Oklahoma
+03-20-2021:09:51:34 M2.14 19km ESE of Little Lake, CA
+03-20-2021:09:26:56 M1.9 21 km W of Cohoe, Alaska
+03-20-2021:09:09:45 M7.0 27 km ENE of Ishinomaki, Japan
+03-20-2021:09:06:52 M1.5 65 km WNW of Ninilchik, Alaska
+03-20-2021:08:30:15 M1.66 26km NNW of Searles Valley, CA
+03-20-2021:08:27:17 M1.6 24 km ESE of Tanana, Alaska
+03-20-2021:08:21:39 M2.36 15 km NE of Challis, Idaho
+03-20-2021:08:18:40 M1.72 2 km S of Union City, Oklahoma
+03-20-2021:08:17:36 M1.6 59 km WNW of Tatitlek, Alaska
+03-20-2021:08:09:14 M1.5 13 km WNW of Susitna North, Alaska
+03-20-2021:07:40:24 M1.6 26km NNW of Searles Valley, CA
+03-20-2021:07:20:25 M1.82 9km WNW of The Geysers, CA
+03-20-2021:07:18:21 M2.16 23 km NW of Stanley, Idaho
+03-20-2021:06:14:41 M1.9 47 km NNE of Petersville, Alaska
+03-20-2021:06:13:54 M2.3 71 km NW of Ninilchik, Alaska
+03-20-2021:05:45:43 M2.18 11 km S of Ames, Oklahoma
+03-20-2021:05:33:05 M2.16 4km SE of Lake Henshaw, CA
+03-20-2021:05:05:20 M1.81 12km NNE of Piru, CA
+03-20-2021:03:59:37 M2.39 10 km E of Pāhala, Hawaii
+03-20-2021:03:52:51 M1.7 39 km NW of Ninilchik, Alaska
+03-20-2021:03:46:40 M2.32999992 8 km ENE of Pāhala, Hawaii
+03-20-2021:03:44:22 M1.5 2 km NNE of Big Lake, Alaska
+03-20-2021:03:03:11 M1.87 14km WSW of Searles Valley, CA
+03-20-2021:03:03:10 M1.71 11km SSW of Searles Valley, CA
+03-20-2021:01:58:03 M2.46 14 km S of Fern Forest, Hawaii
+03-20-2021:01:56:22 M2.34 9 km E of Pāhala, Hawaii
+03-20-2021:01:54:21 M1.6 36 km W of Salamatof, Alaska
+03-20-2021:01:16:30 M3.1 Nevada
+03-20-2021:00:48:43 M2.19 18 km WNW of Stanley, Idaho
+03-20-2021:00:43:40 M2.61 6 km SW of Elliston, Montana
+03-20-2021:00:34:52 M2.13 11 km SE of Ratliff City, Oklahoma
+03-20-2021:00:26:26 M4.6 75 km NNE of Miyako, Japan
+03-20-2021:00:05:18 M2.05 19km S of Santa Barbara, CA
