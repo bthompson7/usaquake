@@ -206,10 +206,12 @@ public class App {
 								String name = quake.getTimeEarthquakeHappened() + "\n M" + quake.getMag() + " "
 										+ quake.getTitle() + "\n";
 								if (quake.generatedTsunami() && quake.getMag() >= 6.5) {
+									
 									name += " - Possible Tsunami Detected";
 									tf.setText("Most Recent Earthquake: " + name);
 									tf.setBackground(Color.RED);
 									logFile.logInfo("Possible Tsunami Detected!!!");
+									
 								} else if (recentQuake.getMag() >= 5.0) {
 									tf.setText("Most Recent Earthquake: " + recentQuake.getTimeEarthquakeHappened()
 											+ " M" + recentQuake.getMag() + " " + recentQuake.getTitle());
