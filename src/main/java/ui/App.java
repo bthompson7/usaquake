@@ -54,20 +54,19 @@ import util.Logging;
 public class App {
 
 	/*
-	 * Main entry point for USAQuake
+	 * Entry point for USAQuake
 	 * 
-	 * This app has been tested on and will work on the following Operating Systems (but should work on any device
-	 * with java installed):
-	 *  - Windows 10 64 Bit
-	 *  - Ubuntu 18.04.5 LTS
-	 *  - Ubuntu 20.04 LTS
+	 * This app has been tested on and will work on the following Operating Systems
+	 * (but should work on any device with java installed): - Windows 10 64 Bit -
+	 * Ubuntu 18.04.5 LTS - Ubuntu 20.04 LTS
 	 * 
 	 */
 
 	private static final int DEFAULT_ZOOM = 11;
 	private static final long ONE_UNIX_HOUR = 3600000;
-	
+
 	public static void main(String[] args) throws Exception {
+		
 		// Create a TileFactoryInfo for OpenStreetMap
 		TileFactoryInfo info = new OSMTileFactoryInfo();
 		DefaultTileFactory tileFactory = new DefaultTileFactory(info);
@@ -92,6 +91,7 @@ public class App {
 		// build the ui
 		final JFrame frame = new JFrame();
 		mapViewer.setSize(400, 800);
+
 		frame.add(mapViewer);
 		frame.setSize(900, 800);
 		frame.setLocationRelativeTo(null);
@@ -101,7 +101,7 @@ public class App {
 
 		JTextField tf = new JTextField();
 		tf.setEditable(false);
-		tf.setFont(new Font(null, Font. BOLD,16));
+		tf.setFont(new Font(null, Font.BOLD, 16));
 
 		// add menuItem to menuBar
 		JMenuItem aboutMenuItem = new JMenuItem("Settings", KeyEvent.VK_T);
@@ -120,7 +120,6 @@ public class App {
 		aboutMenu.add(aboutMenuItem);
 		mapMenu.add(resetMapLoc);
 		mapMenu.add(exportEarthquakesItem);
-		
 
 		JPanel panel = new JPanel(new GridLayout(0, 1));
 		panel.add(menuBar);
@@ -129,7 +128,7 @@ public class App {
 
 		final JList<String> displayRecentEarthquakes = new JList<String>();
 		final JScrollPane listScroller = new JScrollPane();
-		
+
 		// thread that fetches the data and draws it every 3 minutes (might change
 		// later)
 		Thread fetchAndDraw = new Thread() {
@@ -139,16 +138,16 @@ public class App {
 					while (true) {
 						logFile.logInfo("Thread2 working...");
 						FetchEQData fetch = new FetchEQData();
-						
-						//waypoints to render
+
+						// waypoints to render
 						Set<MyWaypoint> waypoints = new HashSet<MyWaypoint>();
 
 						List<Earthquake> quakesList = fetch.fetchData();
-						
+
 						exportEarthquakesItem.addActionListener((e) -> {
-							//create file
+							// create file
 							try {
-							      FileWriter file = new FileWriter("Earthquakes.txt");
+								FileWriter file = new FileWriter("Earthquakes.txt");
 								for (int i = 0; i < quakesList.size(); i++) {
 									Earthquake quake = quakesList.get(i);
 									String name = quake.getTimeEarthquakeHappened() + " M" + quake.getMag() + " "
@@ -160,24 +159,24 @@ public class App {
 								e1.printStackTrace();
 								logFile.logError("Error when writing to Earthquake file\n" + e1.getStackTrace());
 							}
-						
-							JOptionPane.showMessageDialog(frame, "All Earthquakes have been exported!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
-							
+							JOptionPane.showMessageDialog(frame, "All Earthquakes have been exported!", "Success",
+									JOptionPane.INFORMATION_MESSAGE);
+
 						});
 
 						if (quakesList.size() > 0) {
-							
+
 							Earthquake recentQuake = quakesList.get(0);
 							recentQuake.getTitle();
 							logFile.logInfo("Most Recent Quake is " + recentQuake.getTitle());
-							
+
 							GeoPosition recentQuakePos = new GeoPosition(quakesList.get(0).getLat(),
 									quakesList.get(0).getLon());
-							MyWaypoint wp = new MyWaypoint("M" + recentQuake.getMag(), Color.RED, recentQuakePos);
+							MyWaypoint wp = new MyWaypoint("M " + recentQuake.getMag(), Color.RED, recentQuakePos);
 							waypoints.add(wp);
 
-							//check if we need to play a sound
+							// check if we need to play a sound
 							logFile.logInfo("Got Recent Earthquake data quakesList size is " + quakesList.size());
 							if (recentQuake.getMag() >= 4.0 && recentQuake.getMag() <= 4.9) {
 								ps.playMag4Sound();
@@ -202,41 +201,41 @@ public class App {
 
 							DefaultListModel<String> listModel = new DefaultListModel<String>();
 
-							for (int i = 1; i < quakesList.size(); i++) {
+							for (int i = 0; i < quakesList.size(); i++) {
 								Earthquake quake = quakesList.get(i);
 								String name = quake.getTimeEarthquakeHappened() + "\n M" + quake.getMag() + " "
 										+ quake.getTitle() + "\n";
 								if (quake.generatedTsunami() && quake.getMag() >= 6.5) {
-									name += " -Possible Tsunami Detected";
+									name += " - Possible Tsunami Detected";
 									tf.setText("Most Recent Earthquake: " + name);
 									tf.setBackground(Color.RED);
 									logFile.logInfo("Possible Tsunami Detected!!!");
 								} else if (recentQuake.getMag() >= 5.0) {
-									tf.setText("Most Recent Earthquake: " + recentQuake.getTimeEarthquakeHappened() + " M" + recentQuake.getMag() + " " + recentQuake.getTitle());
+									tf.setText("Most Recent Earthquake: " + recentQuake.getTimeEarthquakeHappened()
+											+ " M" + recentQuake.getMag() + " " + recentQuake.getTitle());
 									tf.setBackground(Color.ORANGE);
-								} else{
-									tf.setText("Most Recent Earthquake: " + recentQuake.getTimeEarthquakeHappened() + " M" + recentQuake.getMag() + " " + recentQuake.getTitle());
+								} else {
+									tf.setText("Most Recent Earthquake: " + recentQuake.getTimeEarthquakeHappened()
+											+ " M" + recentQuake.getMag() + " " + recentQuake.getTitle());
 									tf.setBackground(Color.WHITE);
 								}
 								listModel.addElement(name);
-								
+
 								GeoPosition quakePos = new GeoPosition(quakesList.get(i).getLat(),
 										quakesList.get(i).getLon());
-								
-								
-								if(getCurrentUnixTime() - quake.getUnixTime() <= ONE_UNIX_HOUR && quake.getDay().equals(getCurrentDay())) {
-									MyWaypoint wp2 = new MyWaypoint("M" + quake.getMag(), Color.GREEN	, quakePos);
+
+								if (getCurrentUnixTime() - quake.getUnixTime() <= ONE_UNIX_HOUR
+										&& quake.getDay().equals(getCurrentDay())) {
+									MyWaypoint wp2 = new MyWaypoint("M " + quake.getMag(), Color.YELLOW, quakePos);
+
 									waypoints.add(wp2);
 
-
-								}else{
-									MyWaypoint wp2 = new MyWaypoint("M" + quake.getMag(), Color.YELLOW, quakePos);
+								} else {
+									MyWaypoint wp2 = new MyWaypoint("M " + quake.getMag(), Color.WHITE, quakePos);
 									waypoints.add(wp2);
-
 
 								}
-								
-								
+
 							}
 
 							displayRecentEarthquakes.setModel(listModel);
@@ -247,26 +246,26 @@ public class App {
 							mapViewer.setAddressLocation(recentQuakePos);
 							frame.add(listScroller, BorderLayout.EAST);
 
-							//draw waypoints							
+							// draw waypoints
 							WaypointPainter<MyWaypoint> waypointPainter = new WaypointPainter<MyWaypoint>();
 							waypointPainter.setWaypoints(waypoints);
 
 							waypointPainter.setRenderer(new FancyWaypointRenderer());
 							mapViewer.setOverlayPainter(waypointPainter);
-							
+
 							panel.revalidate();
 							panel.repaint();
 							frame.revalidate();
 							frame.repaint();
 
-
 							logFile.logInfo("Done updating map sleeping...");
-						}else {
+						} else {
 							logFile.logError("Unable to fetch recent earthquake data! Trying again in 3 minutes");
-							JOptionPane.showMessageDialog(frame, "Unable to fetch data. Trying again in 3 minutes", "Error", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(frame, "Unable to fetch data. Trying again in 3 minutes",
+									"Error", JOptionPane.ERROR_MESSAGE);
 						}
 
-						Thread.sleep(120000); //120000 = 2 minutes 180000 = 3 minutes 300000 = 5 minutes
+						Thread.sleep(120000); // 120000 = 2 minutes 180000 = 3 minutes 300000 = 5 minutes
 
 					}
 
@@ -287,8 +286,6 @@ public class App {
 			mapViewer.setAddressLocation(pos);
 
 		});
-		
-
 
 		// Set the map focus
 		mapViewer.setZoom(DEFAULT_ZOOM);
@@ -331,21 +328,22 @@ public class App {
 		int zoom = mapViewer.getZoom();
 
 		frame.setTitle(
-				String.format("USAQuake " + Constants.getVersion() + " | Latitude: %.2f / Longitude %.2f | Zoom: %d", lat, lon, zoom));
+				String.format("USAQuake " + Constants.getVersion() + " | Latitude: %.2f / Longitude %.2f | Zoom: %d",
+						lat, lon, zoom));
 	}
-	
-	
+
 	private static String getCurrentUnixHour() {
-		long unixTime = System.currentTimeMillis();;
+		long unixTime = System.currentTimeMillis();
+		;
 		Date date = new Date(unixTime);
 		DateFormat formatter = new SimpleDateFormat("HH");
 		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 		String hour = formatter.format(date);
 		System.out.println(hour);
 		return hour;
-		
+
 	}
-	
+
 	private static String getCurrentDay() {
 		long unixTime = System.currentTimeMillis();
 		Date date = new Date(unixTime);
@@ -354,13 +352,9 @@ public class App {
 		String day = formatter.format(date);
 		return day;
 	}
-	
+
 	private static long getCurrentUnixTime() {
 		return System.currentTimeMillis();
 	}
-	
-	
-	
-	
-	
+
 }
