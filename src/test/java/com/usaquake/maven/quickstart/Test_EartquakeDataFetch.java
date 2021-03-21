@@ -14,6 +14,7 @@ public class Test_EartquakeDataFetch extends TestCase  {
 		FetchEQData fetch = new FetchEQData();
 		try {
 			List<Earthquake> quakes = fetch.fetchData();
+			System.out.println(quakes.size());
 			assertTrue(quakes.size() > 0);
 
 		} catch (Exception e) {

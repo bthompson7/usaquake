@@ -1,0 +1,80 @@
+03-21-2021:17:25:31 M2.13 10 km ENE of Pāhala, Hawaii
+03-21-2021:17:17:28 M1.6 72 km NW of Yakutat, Alaska
+03-21-2021:16:57:15 M1.97 Island of Hawaii, Hawaii
+03-21-2021:16:20:36 M2.08 3 km E of Pāhala, Hawaii
+03-21-2021:16:15:15 M1.8 47 km NNW of Yakutat, Alaska
+03-21-2021:16:07:17 M2.09 24km NNE of Trona, CA
+03-21-2021:16:02:32 M2.41 3 km ENE of Pāhala, Hawaii
+03-21-2021:16:02:25 M2.32 7 km SE of Pāhala, Hawaii
+03-21-2021:16:00:12 M2.1 57 km NNE of Karluk, Alaska
+03-21-2021:15:49:11 M2.3 18 km ESE of Beluga, Alaska
+03-21-2021:15:45:29 M1.6 80 km WNW of Nikiski, Alaska
+03-21-2021:15:42:20 M1.75 6 km SSW of Volcano, Hawaii
+03-21-2021:15:40:30 M1.8 59 km SSE of Beaver, Alaska
+03-21-2021:15:30:50 M4.5 8 km W of Yōkaichiba, Japan
+03-21-2021:15:18:38 M2.16 14 km NW of Pawnee, Oklahoma
+03-21-2021:15:13:07 M2.9 63 km ENE of Livengood, Alaska
+03-21-2021:14:50:47 M2.13 23 km E of Honaunau-Napoopoo, Hawaii
+03-21-2021:14:19:56 M1.98 27 km E of Honaunau-Napoopoo, Hawaii
+03-21-2021:14:18:58 M1.88 12km WNW of Lake Pillsbury, CA
+03-21-2021:14:16:42 M1.9 62 km SSE of Cantwell, Alaska
+03-21-2021:14:10:46 M1.7 66 km SSE of Beaver, Alaska
+03-21-2021:13:55:42 M2.5 68 km ENE of Port Alsworth, Alaska
+03-21-2021:13:29:53 M2.0 79 km SE of New Allakaket, Alaska
+03-21-2021:13:24:01 M2.3 48 km ENE of Tonopah, Nevada
+03-21-2021:13:12:05 M2.1 8 km SSE of Pāhala, Hawaii
+03-21-2021:12:57:11 M2.28 7 km ESE of Ratliff City, Oklahoma
+03-21-2021:12:55:46 M1.82 5km NW of The Geysers, CA
+03-21-2021:12:53:43 M1.73 1 km ESE of Mullan, Idaho
+03-21-2021:12:45:41 M2.2 74 km SW of Nanwalek, Alaska
+03-21-2021:12:45:18 M1.87 9 km W of Okeene, Oklahoma
+03-21-2021:12:19:19 M1.61 22km NE of San Lucas, CA
+03-21-2021:12:13:13 M1.9 32 km SSW of Denali National Park, Alaska
+03-21-2021:12:11:03 M1.6 57 km SSE of Beaver, Alaska
+03-21-2021:12:03:53 M1.8 59 km SSE of Beaver, Alaska
+03-21-2021:12:03:02 M2.79 17km W of Searles Valley, CA
+03-21-2021:12:01:13 M1.8 45 km ESE of Denali National Park, Alaska
+03-21-2021:11:59:53 M1.9 4 km NE of Minco, Oklahoma
+03-21-2021:11:55:07 M1.9 56 km SSE of Beaver, Alaska
+03-21-2021:11:29:38 M1.74 5km WSW of Salton City, CA
+03-21-2021:11:29:37 M2.54 10 km E of Pāhala, Hawaii
+03-21-2021:10:49:17 M2.0 32 km SW of Rachel, Nevada
+03-21-2021:10:24:10 M1.9 2 km N of Willow, Alaska
+03-21-2021:10:03:39 M2.12 7 km ENE of Pāhala, Hawaii
+03-21-2021:09:58:40 M1.95 1km NNE of The Geysers, CA
+03-21-2021:09:47:11 M1.8 14 km SE of Susitna North, Alaska
+03-21-2021:09:45:27 M1.75 15km NE of Little Lake, CA
+03-21-2021:09:32:49 M2.6 16 km SW of Kanosh, Utah
+03-21-2021:09:29:44 M1.7 57 km NNE of Chase, Alaska
+03-21-2021:09:10:55 M1.5 33 km SW of Rachel, Nevada
+03-21-2021:09:02:45 M2.23 1 km E of Pāhala, Hawaii
+03-21-2021:09:00:14 M2.08 3 km SSE of Pāhala, Hawaii
+03-21-2021:08:21:47 M1.7 59 km SSE of Beaver, Alaska
+03-21-2021:08:09:58 M1.93 24 km NW of Pāhala, Hawaii
+03-21-2021:08:08:45 M2.22 2 km SSE of Pāhala, Hawaii
+03-21-2021:07:53:31 M1.62 11 km W of Stanley, Idaho
+03-21-2021:07:33:26 M1.63 16km NW of Pinnacles, CA
+03-21-2021:07:26:31 M2.3 35 km W of Skwentna, Alaska
+03-21-2021:07:13:23 M1.92 12 km W of Stanley, Idaho
+03-21-2021:07:10:41 M1.51 18 km WNW of Stanley, Idaho
+03-21-2021:07:00:26 M2.5 81 km W of Salamatof, Alaska
+03-21-2021:06:43:50 M1.5 50 km WNW of Tyonek, Alaska
+03-21-2021:06:34:20 M1.8 43 km NNW of Paxson, Alaska
+03-21-2021:06:24:41 M2.0 67 km WNW of Petersville, Alaska
+03-21-2021:05:57:38 M1.8 4 km S of Big Lake, Alaska
+03-21-2021:05:50:07 M2.5 171 km SE of Cordova, Alaska
+03-21-2021:05:45:33 M2.24 5 km SE of Pāhala, Hawaii
+03-21-2021:05:33:01 M1.92 20km ESE of Little Lake, CA
+03-21-2021:05:24:09 M1.8 8 km N of Houston, Alaska
+03-21-2021:05:11:49 M1.6 43 km ESE of Big Pine, California
+03-21-2021:05:05:00 M1.6 31 km SE of Mina, Nevada
+03-21-2021:04:54:59 M2.18 0 km ESE of Pāhala, Hawaii
+03-21-2021:02:46:09 M2.3 51 km NNE of Petersville, Alaska
+03-21-2021:02:20:06 M1.6 35 km SE of Mina, Nevada
+03-21-2021:01:42:26 M2.08 9 km SE of Ratliff City, Oklahoma
+03-21-2021:01:23:34 M1.64 13km SW of Searles Valley, CA
+03-21-2021:01:21:33 M1.8 5 km WNW of Point MacKenzie, Alaska
+03-21-2021:01:14:20 M2.37 5 km SSE of Quinton, Oklahoma
+03-21-2021:01:11:16 M1.7 52 km SSE of Denali National Park, Alaska
+03-21-2021:00:35:23 M2.07 Island of Hawaii, Hawaii
+03-21-2021:00:03:10 M1.88 13 km NNW of Wai‘ōhinu, Hawaii

@@ -14,6 +14,8 @@ import java.time.Duration;
 public class EarlyEarthquakeWarning {
 
 	/*
+	 * In very early development
+	 * 
 	 * Uses google trends to attempt to predict if an earthquake is about to happen
 	 * 
 	 * Because most people when they feel an earthquake go to social media first

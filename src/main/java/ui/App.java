@@ -126,17 +126,18 @@ public class App {
 		panel.add(tf);
 		frame.add(panel, BorderLayout.NORTH);
 
+		
+		//TODO
 		final JList<String> displayRecentEarthquakes = new JList<String>();
 		final JScrollPane listScroller = new JScrollPane();
 
-		// thread that fetches the data and draws it every 3 minutes (might change
-		// later)
+		// thread that fetches the data and draws it every 2 minutes
 		Thread fetchAndDraw = new Thread() {
 			public void run() {
 				PlaySound ps = new PlaySound();
 				try {
 					while (true) {
-						logFile.logInfo("Thread2 working...");
+						logFile.logInfo("fetchAndDraw Thread updating map...");
 						FetchEQData fetch = new FetchEQData();
 
 						// waypoints to render
@@ -144,10 +145,11 @@ public class App {
 
 						List<Earthquake> quakesList = fetch.fetchData();
 
+						//export list of earthquakes to text file
 						exportEarthquakesItem.addActionListener((e) -> {
-							// create file
 							try {
-								FileWriter file = new FileWriter("Earthquakes.txt");
+								
+								FileWriter file = new FileWriter("Earthquakes " + getCurrentDay() +".txt");
 								for (int i = 0; i < quakesList.size(); i++) {
 									Earthquake quake = quakesList.get(i);
 									String name = quake.getTimeEarthquakeHappened() + " M" + quake.getMag() + " "
@@ -155,14 +157,18 @@ public class App {
 									file.write(name);
 								}
 								file.close();
+								
+								JOptionPane.showMessageDialog(frame, "All Earthquakes have been exported!", "Success",
+										JOptionPane.INFORMATION_MESSAGE);
+
 							} catch (IOException e1) {
-								e1.printStackTrace();
-								logFile.logError("Error when writing to Earthquake file\n" + e1.getStackTrace());
+								logFile.logError("Error when writing to Earthquake file\n" + e1.getMessage());
+								
+								JOptionPane.showMessageDialog(frame, "Error when writing to Earthquake file.",
+										"Error", JOptionPane.ERROR_MESSAGE);
 							}
 
-							JOptionPane.showMessageDialog(frame, "All Earthquakes have been exported!", "Success",
-									JOptionPane.INFORMATION_MESSAGE);
-
+						
 						});
 
 						if (quakesList.size() > 0) {
@@ -199,12 +205,16 @@ public class App {
 
 							}
 
+							
+							//TODO
 							DefaultListModel<String> listModel = new DefaultListModel<String>();
 
-							for (int i = 0; i < quakesList.size(); i++) {
+							for (int i = 1; i < quakesList.size(); i++) {
 								Earthquake quake = quakesList.get(i);
 								String name = quake.getTimeEarthquakeHappened() + "\n M" + quake.getMag() + " "
 										+ quake.getTitle() + "\n";
+								
+								
 								if (quake.generatedTsunami() && quake.getMag() >= 6.5) {
 									
 									name += " - Possible Tsunami Detected";
@@ -221,6 +231,8 @@ public class App {
 											+ " M" + recentQuake.getMag() + " " + recentQuake.getTitle());
 									tf.setBackground(Color.WHITE);
 								}
+								
+								//TODO
 								listModel.addElement(name);
 
 								GeoPosition quakePos = new GeoPosition(quakesList.get(i).getLat(),
@@ -240,7 +252,7 @@ public class App {
 
 							}
 
-							displayRecentEarthquakes.setModel(listModel);
+							displayRecentEarthquakes.setModel(listModel); //TODO
 							displayRecentEarthquakes.setSize(30, 60);
 							displayRecentEarthquakes.setFont(new Font("Serif", Font.BOLD, 12));
 							listScroller.setViewportView(displayRecentEarthquakes);
@@ -260,9 +272,9 @@ public class App {
 							frame.revalidate();
 							frame.repaint();
 
-							logFile.logInfo("Done updating map sleeping...");
+							logFile.logInfo("DONE updating map sleeping.");
 						} else {
-							logFile.logError("Unable to fetch recent earthquake data! Trying again in 3 minutes");
+							logFile.logError("Unable to fetch recent earthquake data! Trying again in 2 minutes");
 							JOptionPane.showMessageDialog(frame, "Unable to fetch data. Trying again in 3 minutes",
 									"Error", JOptionPane.ERROR_MESSAGE);
 						}
@@ -271,10 +283,11 @@ public class App {
 
 					}
 
-				} catch (InterruptedException e) {
-					logFile.logError(e.getMessage());
 				} catch (Exception e) {
-					logFile.logError(e.getMessage());
+					
+					logFile.logError("Unable to fetch recent earthquake data! Trying again in 2 minutes" + e.getMessage());
+					JOptionPane.showMessageDialog(frame, "Unable to fetch Earthquake data. Check your connection. ",
+							"Error", JOptionPane.ERROR_MESSAGE);
 
 				}
 			}
