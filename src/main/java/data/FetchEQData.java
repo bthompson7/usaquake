@@ -41,6 +41,8 @@ public class FetchEQData {
 		// sending the http get request to the usgs api
 		String url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=" + getCurrentDateForApi()
 				+ "&endtime&minmagnitude=1.5";
+		
+		System.out.println("url = " + url);
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		con.setRequestProperty("User-Agent", USER_AGENT);
@@ -68,8 +70,14 @@ public class FetchEQData {
 			JsonObject features = j2Array.get(i).getAsJsonObject();
 			JsonObject properties = features.get("properties").getAsJsonObject();// info about the earthquake
 			JsonObject loc = features.get("geometry").getAsJsonObject();
-
-			String quakeLocation = properties.get("place").getAsString();
+			String quakeLocation = "";
+			
+			if(properties.get("place").isJsonNull()) {
+				quakeLocation = "Unknown Location";
+			}else {
+				quakeLocation = properties.get("place").getAsString();	
+			}
+			
 			if (isQuakeFromSupportedRegion(quakeLocation)) {
 				Earthquake eq = new Earthquake();
 				JsonArray cords = loc.get("coordinates").getAsJsonArray();

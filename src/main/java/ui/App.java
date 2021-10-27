@@ -284,9 +284,9 @@ public class App {
 					}
 
 				} catch (Exception e) {
-					
+					e.printStackTrace();
 					logFile.logError("Unable to fetch recent earthquake data! Trying again in 2 minutes" + e.getMessage());
-					JOptionPane.showMessageDialog(frame, "Unable to fetch Earthquake data. Check your connection. ",
+					JOptionPane.showMessageDialog(frame, "Unable to fetch Earthquake data: " + e.getMessage(),
 							"Error", JOptionPane.ERROR_MESSAGE);
 
 				}
