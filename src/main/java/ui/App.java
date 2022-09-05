@@ -3,8 +3,11 @@ package ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -29,6 +32,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ListModel;
 import javax.swing.WindowConstants;
 import javax.swing.event.MouseInputListener;
 
@@ -49,9 +53,10 @@ import data.FetchEQData;
 import model.Earthquake;
 import sound.PlaySound;
 import util.Constants;
+import util.CustomCellRenderer;
 import util.Logging;
 
-public class App {
+public class App extends Frame {
 
 	/*
 	 * Entry point for USAQuake
@@ -62,15 +67,19 @@ public class App {
 	 * 
 	 */
 
-	private static final int DEFAULT_ZOOM = 11;
+	private static final int DEFAULT_ZOOM = 9;
 	private static final long ONE_UNIX_HOUR = 3600000;
+	private static Earthquake recentQuake = new Earthquake();
+
 
 	public static void main(String[] args) throws Exception {
-		
+
 		// Create a TileFactoryInfo for OpenStreetMap
 		TileFactoryInfo info = new OSMTileFactoryInfo();
 		DefaultTileFactory tileFactory = new DefaultTileFactory(info);
+		
 
+		
 		// Setup local file cache
 		File cacheDir = new File(System.getProperty("user.home") + File.separator + ".jxmapviewer2");
 		tileFactory.setLocalCache(new FileBasedLocalCache(cacheDir, false));
@@ -126,10 +135,9 @@ public class App {
 		panel.add(tf);
 		frame.add(panel, BorderLayout.NORTH);
 
-		
-		//TODO
-		final JList<String> displayRecentEarthquakes = new JList<String>();
-		final JScrollPane listScroller = new JScrollPane();
+		// recent earthquakes side bar
+		JList<Earthquake> recentEarthquakesList = new JList<Earthquake>();
+		JScrollPane listScroller = new JScrollPane();
 
 		// thread that fetches the data and draws it every 2 minutes
 		Thread fetchAndDraw = new Thread() {
@@ -145,11 +153,11 @@ public class App {
 
 						List<Earthquake> quakesList = fetch.fetchData();
 
-						//export list of earthquakes to text file
+						// export list of earthquakes to text file
 						exportEarthquakesItem.addActionListener((e) -> {
 							try {
-								
-								FileWriter file = new FileWriter("Earthquakes " + getCurrentDay() +".txt");
+
+								FileWriter file = new FileWriter("Earthquakes " + getCurrentDay() + ".txt");
 								for (int i = 0; i < quakesList.size(); i++) {
 									Earthquake quake = quakesList.get(i);
 									String name = quake.getTimeEarthquakeHappened() + " M" + quake.getMag() + " "
@@ -157,29 +165,28 @@ public class App {
 									file.write(name);
 								}
 								file.close();
-								
+
 								JOptionPane.showMessageDialog(frame, "All Earthquakes have been exported!", "Success",
 										JOptionPane.INFORMATION_MESSAGE);
 
 							} catch (IOException e1) {
 								logFile.logError("Error when writing to Earthquake file\n" + e1.getMessage());
-								
-								JOptionPane.showMessageDialog(frame, "Error when writing to Earthquake file.",
-										"Error", JOptionPane.ERROR_MESSAGE);
+
+								JOptionPane.showMessageDialog(frame, "Error when writing to Earthquake file.", "Error",
+										JOptionPane.ERROR_MESSAGE);
 							}
 
-						
 						});
 
 						if (quakesList.size() > 0) {
 
-							Earthquake recentQuake = quakesList.get(0);
+							recentQuake = quakesList.get(0);
 							recentQuake.getTitle();
 							logFile.logInfo("Most Recent Quake is " + recentQuake.getTitle());
 
 							GeoPosition recentQuakePos = new GeoPosition(quakesList.get(0).getLat(),
 									quakesList.get(0).getLon());
-							MyWaypoint wp = new MyWaypoint("M " + recentQuake.getMag(), Color.RED, recentQuakePos);
+							MyWaypoint wp = new MyWaypoint("M " + recentQuake.getMag() + " \n" + recentQuake.getTitle(), Color.RED, recentQuakePos);
 							waypoints.add(wp);
 
 							// check if we need to play a sound
@@ -205,23 +212,20 @@ public class App {
 
 							}
 
-							
-							//TODO
-							DefaultListModel<String> listModel = new DefaultListModel<String>();
+							DefaultListModel<Earthquake> listModel = new DefaultListModel<Earthquake>();
 
 							for (int i = 1; i < quakesList.size(); i++) {
 								Earthquake quake = quakesList.get(i);
 								String name = quake.getTimeEarthquakeHappened() + "\n M" + quake.getMag() + " "
 										+ quake.getTitle() + "\n";
-								
-								
+
 								if (quake.generatedTsunami() && quake.getMag() >= 6.5) {
-									
+
 									name += " - Possible Tsunami Detected";
 									tf.setText("Most Recent Earthquake: " + name);
 									tf.setBackground(Color.RED);
 									logFile.logInfo("Possible Tsunami Detected!!!");
-									
+
 								} else if (recentQuake.getMag() >= 5.0) {
 									tf.setText("Most Recent Earthquake: " + recentQuake.getTimeEarthquakeHappened()
 											+ " M" + recentQuake.getMag() + " " + recentQuake.getTitle());
@@ -231,32 +235,43 @@ public class App {
 											+ " M" + recentQuake.getMag() + " " + recentQuake.getTitle());
 									tf.setBackground(Color.WHITE);
 								}
-								
-								//TODO
-								listModel.addElement(name);
+								listModel.addElement(quake);
 
 								GeoPosition quakePos = new GeoPosition(quakesList.get(i).getLat(),
 										quakesList.get(i).getLon());
 
 								if (getCurrentUnixTime() - quake.getUnixTime() <= ONE_UNIX_HOUR
 										&& quake.getDay().equals(getCurrentDay())) {
-									MyWaypoint wp2 = new MyWaypoint("M " + quake.getMag(), Color.YELLOW, quakePos);
-
+									MyWaypoint wp2 = new MyWaypoint("M " + quake.getMag() + " \n" + quake.getTitle(), Color.YELLOW, quakePos);
 									waypoints.add(wp2);
 
 								} else {
-									MyWaypoint wp2 = new MyWaypoint("M " + quake.getMag(), Color.WHITE, quakePos);
+									MyWaypoint wp2 = new MyWaypoint("M " + quake.getMag() + " \n" + quake.getTitle(), Color.WHITE, quakePos);
 									waypoints.add(wp2);
-
 								}
-
 							}
 
-							displayRecentEarthquakes.setModel(listModel); //TODO
-							displayRecentEarthquakes.setSize(30, 60);
-							displayRecentEarthquakes.setFont(new Font("Serif", Font.BOLD, 12));
-							listScroller.setViewportView(displayRecentEarthquakes);
-							displayRecentEarthquakes.setLayoutOrientation(JList.VERTICAL);
+							recentEarthquakesList.setModel(listModel);	
+							recentEarthquakesList.addMouseListener(new MouseAdapter() {
+							    public void mouseClicked(MouseEvent evt) {
+							        JList<?> list = (JList<?>)evt.getSource();
+							        if (evt.getClickCount() == 2) {
+							            int index = list.locationToIndex(evt.getPoint());
+							            ListModel<?> listModel = list.getModel();
+							            Earthquake quake = (Earthquake) listModel.getElementAt(index);
+							            mapViewer.setZoom(5);
+										GeoPosition pos = new GeoPosition(quake.getLat(),quake.getLon());
+										mapViewer.setAddressLocation(pos);
+
+							        }
+							    }
+							});
+							CustomCellRenderer cell = new CustomCellRenderer();
+							recentEarthquakesList.setCellRenderer(cell);
+							recentEarthquakesList.setSize(30, 60);
+							recentEarthquakesList.setFont(new Font("Serif", Font.BOLD, 12));
+							listScroller.setViewportView(recentEarthquakesList);
+							recentEarthquakesList.setLayoutOrientation(JList.VERTICAL);
 							mapViewer.setAddressLocation(recentQuakePos);
 							frame.add(listScroller, BorderLayout.EAST);
 
@@ -275,7 +290,7 @@ public class App {
 							logFile.logInfo("DONE updating map sleeping.");
 						} else {
 							logFile.logError("Unable to fetch recent earthquake data! Trying again in 2 minutes");
-							JOptionPane.showMessageDialog(frame, "Unable to fetch data. Trying again in 3 minutes",
+							JOptionPane.showMessageDialog(frame, "Unable to fetch data. Trying again in 2 minutes",
 									"Error", JOptionPane.ERROR_MESSAGE);
 						}
 
@@ -285,9 +300,10 @@ public class App {
 
 				} catch (Exception e) {
 					e.printStackTrace();
-					logFile.logError("Unable to fetch recent earthquake data! Trying again in 2 minutes" + e.getMessage());
-					JOptionPane.showMessageDialog(frame, "Unable to fetch Earthquake data: " + e.getMessage(),
-							"Error", JOptionPane.ERROR_MESSAGE);
+					logFile.logError(
+							"Unable to fetch recent earthquake data! Trying again in 2 minutes" + e.getMessage());
+					JOptionPane.showMessageDialog(frame, "Unable to fetch Earthquake data: " + e.getMessage(), "Error",
+							JOptionPane.ERROR_MESSAGE);
 
 				}
 			}
@@ -295,9 +311,10 @@ public class App {
 
 		fetchAndDraw.start();
 
+		// reset map location to the most recent earthquake
 		resetMapLoc.addActionListener((e) -> {
 			mapViewer.setZoom(DEFAULT_ZOOM);
-			GeoPosition pos = mapViewer.getAddressLocation();
+			GeoPosition pos = new GeoPosition(recentQuake.getLat(),recentQuake.getLon());
 			mapViewer.setAddressLocation(pos);
 
 		});
@@ -347,18 +364,6 @@ public class App {
 						lat, lon, zoom));
 	}
 
-	private static String getCurrentUnixHour() {
-		long unixTime = System.currentTimeMillis();
-		;
-		Date date = new Date(unixTime);
-		DateFormat formatter = new SimpleDateFormat("HH");
-		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-		String hour = formatter.format(date);
-		System.out.println(hour);
-		return hour;
-
-	}
-
 	private static String getCurrentDay() {
 		long unixTime = System.currentTimeMillis();
 		Date date = new Date(unixTime);
@@ -371,5 +376,6 @@ public class App {
 	private static long getCurrentUnixTime() {
 		return System.currentTimeMillis();
 	}
+
 
 }

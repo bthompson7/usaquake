@@ -95,9 +95,6 @@ public class Earthquake {
 	public void setUnixTime(long unixTime) {
 		this.unixTime = unixTime;
 	}
-
-	
-	
 	
 	public String unixTimeToDate(long epoch) {
 		Date date = new Date(epoch);
@@ -114,8 +111,8 @@ public class Earthquake {
 		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 		String hour = formatter.format(date);
 		return hour;
-
 	}
+
 	
 	public String unixDay(long epoch){
 		Date date = new Date(epoch);
@@ -126,8 +123,10 @@ public class Earthquake {
 	}
 	
 
-	public static double round(double value, int places) {
-	    if (places < 0) throw new IllegalArgumentException();
+	public double round(double value, int places) {
+	    if (places < 0) {
+	    	throw new IllegalArgumentException();
+	    }
 
 	    BigDecimal bd = BigDecimal.valueOf(value);
 	    bd = bd.setScale(places, RoundingMode.HALF_UP);

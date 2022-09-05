@@ -11,9 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -23,9 +21,10 @@ public class FetchEQData {
 
 	private final static String USER_AGENT = "Mozilla/5.0";
 	private static Map<String, String> regions = new HashMap<String, String>();
+	
 	private static String[] supported_regions = { "CA", "California", "Alaska", "Nevada", "Hawaii", "Oregon", "Washington",
 			"Montana", "Idaho", "Texas", "Wyoming", "Utah", "New Mexico", "Colorado", "Oklahoma", "OK", "Maine", "ME",
-			"Kansas", "Japan"};
+			"Kansas", "Japan", "Missouri","New Mexico", "Arizona", "Michigan","Kansas","Ohio","Puerto Rico"};
 	
 	
 	public FetchEQData() {
@@ -42,7 +41,6 @@ public class FetchEQData {
 		String url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=" + getCurrentDateForApi()
 				+ "&endtime&minmagnitude=1.5";
 		
-		System.out.println("url = " + url);
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		con.setRequestProperty("User-Agent", USER_AGENT);
