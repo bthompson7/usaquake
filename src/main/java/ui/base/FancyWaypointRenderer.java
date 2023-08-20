@@ -1,4 +1,4 @@
-package ui;
+package ui.base;
 
 import java.awt.Color;
 import java.awt.FontMetrics;
@@ -35,7 +35,7 @@ public class FancyWaypointRenderer implements WaypointRenderer<MyWaypoint>
      */
     public FancyWaypointRenderer()
     {
-        URL resource = getClass().getResource("/resources/waypoint_white.png");
+        URL resource = getClass().getResource("/waypoint_white.png");
 
         try
         {

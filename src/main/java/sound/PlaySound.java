@@ -25,7 +25,7 @@ public class PlaySound {
 	 */
 	
 	public void playNewEarthquakeSound() {
-		URL url = getClass().getResource("/resources/Shindo1.wav");
+		URL url = getClass().getResource("/Shindo1.wav");
 		loadSoundEffect(url);
 		if (clip.isRunning()) {
 			clip.stop();
@@ -37,7 +37,7 @@ public class PlaySound {
 
 	
 	public void playTsunamiAlertSound() {
-		URL url = getClass().getResource("/resources/Tsunami.wav");
+		URL url = getClass().getResource("/Tsunami.wav");
 		loadSoundEffect(url);
 		if (clip.isRunning()) {
 			clip.stop();
@@ -48,7 +48,7 @@ public class PlaySound {
 	}
 	
 	public void playStrongEarthquakeSound() {
-		URL url = getClass().getResource("/resources/EEW2.wav");
+		URL url = getClass().getResource("/EEW2.wav");
 		loadSoundEffect(url);
 		if (clip.isRunning()) {
 			clip.stop();
@@ -59,7 +59,7 @@ public class PlaySound {
 	}
 	
 	public void playMag4Sound() {
-		URL url = getClass().getResource("/resources/Mag4.wav");
+		URL url = getClass().getResource("/Mag4.wav");
 		loadSoundEffect(url);
 		if (clip.isRunning()) {
 			clip.stop();
@@ -70,7 +70,7 @@ public class PlaySound {
 	}
 	
 	public void playMag5Sound() {
-		URL url = getClass().getResource("/resources/Mag5.wav");
+		URL url = getClass().getResource("/Mag5.wav");
 		loadSoundEffect(url);
 		if (clip.isRunning()) {
 			clip.stop();
@@ -80,7 +80,7 @@ public class PlaySound {
 
 	}
 	public void playMag6Sound() {
-		URL url = getClass().getResource("/resources/Mag6.wav");
+		URL url = getClass().getResource("/Mag6.wav");
 		loadSoundEffect(url);
 		if (clip.isRunning()) {
 			clip.stop();
@@ -90,7 +90,7 @@ public class PlaySound {
 
 	}
 	public void playMag7Sound() {
-		URL url = getClass().getResource("/resources/Mag7Up.wav");
+		URL url = getClass().getResource("/Mag7Up.wav");
 		loadSoundEffect(url);
 		if (clip.isRunning()) {
 			clip.stop();

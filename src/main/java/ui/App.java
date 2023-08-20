@@ -52,8 +52,12 @@ import org.jxmapviewer.viewer.WaypointPainter;
 import data.FetchEQData;
 import model.Earthquake;
 import sound.PlaySound;
+import ui.base.FancyWaypointRenderer;
+import ui.base.MyWaypoint;
+import ui.base.SelectionAdapter;
+import ui.base.SelectionPainter;
 import util.Constants;
-import util.CustomCellRenderer;
+import ui.base.CustomCellRenderer;
 import util.Logging;
 
 public class App extends Frame {

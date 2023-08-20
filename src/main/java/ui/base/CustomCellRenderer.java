@@ -1,4 +1,4 @@
-package util;
+package ui.base;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -11,7 +11,9 @@ import javax.swing.ListModel;
 import model.Earthquake;
 
 /**
+ *
  * Custom JList cell renderer
+ *
  */
 public class CustomCellRenderer implements ListCellRenderer<Object>  { 
 	@Override
