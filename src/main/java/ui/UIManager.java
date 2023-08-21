@@ -9,7 +9,7 @@ import sound.PlaySound;
 import ui.base.CustomCellRenderer;
 import ui.base.FancyWaypointRenderer;
 import ui.base.MyWaypoint;
-import util.Logging;
+import log.AppLog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,12 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class UpdateUI {
-
-
-    public UpdateUI(){
-
-    }
+public class UIManager {
     /**
      *
      * Updates the UI with new earthquakes
@@ -40,7 +35,7 @@ public class UpdateUI {
      * @param recentEarthquakesList
      * @param listScroller
      */
-    public void update(Logging logFile, JMenuItem exportEarthquakesItem, JFrame frame, JPanel panel, JTextField tf, JXMapViewer mapViewer, JList<Earthquake> recentEarthquakesList, JScrollPane listScroller, JMenuItem resetMapLoc){
+    public static void update(AppLog logFile, JMenuItem exportEarthquakesItem, JFrame frame, JPanel panel, JTextField tf, JXMapViewer mapViewer, JList<Earthquake> recentEarthquakesList, JScrollPane listScroller, JMenuItem resetMapLoc){
         PlaySound ps = new PlaySound();
         try {
             while (true) {

@@ -1,23 +1,21 @@
-package util;
+package log;
 
 import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-public class Logging {
+public class AppLog {
 
 	private Logger logger = Logger.getLogger("MyLog");
 	private FileHandler fh;
 
-	public Logging() {
+	public AppLog() {
 		init();
 	}
 
 	private void init() {
 		try {
-
-			// true means we append to the end of the log file
 			fh = new FileHandler("usaquake.log", true);
 			logger.addHandler(fh);
 			SimpleFormatter formatter = new SimpleFormatter();

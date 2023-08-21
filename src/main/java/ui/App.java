@@ -1,38 +1,28 @@
 package ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.TimeZone;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.ListModel;
 import javax.swing.WindowConstants;
 import javax.swing.event.MouseInputListener;
 
@@ -45,34 +35,19 @@ import org.jxmapviewer.input.PanKeyListener;
 import org.jxmapviewer.input.PanMouseInputListener;
 import org.jxmapviewer.input.ZoomMouseWheelListenerCursor;
 import org.jxmapviewer.viewer.DefaultTileFactory;
-import org.jxmapviewer.viewer.GeoPosition;
 import org.jxmapviewer.viewer.TileFactoryInfo;
-import org.jxmapviewer.viewer.WaypointPainter;
 
-import data.FetchEQData;
 import model.Earthquake;
-import sound.PlaySound;
-import ui.base.FancyWaypointRenderer;
-import ui.base.MyWaypoint;
 import ui.base.SelectionAdapter;
 import ui.base.SelectionPainter;
-import util.Constants;
-import ui.base.CustomCellRenderer;
-import util.Logging;
+import log.AppLog;
 
 public class App extends Frame {
 
-	/*
-	 * Entry point for USAQuake
-	 * 
-	 * This app has been tested on and will work on the following Operating Systems
-	 * (but should work on any device with java installed): - Windows 10 64 Bit -
-	 * Ubuntu 18.04.5 LTS - Ubuntu 20.04 LTS
-	 * 
-	 */
-
 	private static int DEFAULT_ZOOM = 9;
 	private static long ONE_UNIX_HOUR = 3600000;
+	private static final String version = "v0.5.0";
+
 
 	public static void main(String[] args) throws Exception {
 
@@ -95,7 +70,7 @@ public class App extends Frame {
 		menuBar.add(mapMenu);
 
 		// init logging
-		Logging logFile = new Logging();
+		AppLog logFile = new AppLog();
 
 		// build the ui
 		final JFrame frame = new JFrame();
@@ -140,8 +115,7 @@ public class App extends Frame {
 		JScrollPane listScroller = new JScrollPane();
 
 		Thread fetchNewEarthquakes = new Thread(() -> {
-            UpdateUI updateUI = new UpdateUI();
-            updateUI.update(logFile, exportEarthquakesItem, frame, panel, tf, mapViewer, recentEarthquakesList, listScroller, resetMapLoc);
+            UIManager.update(logFile, exportEarthquakesItem, frame, panel, tf, mapViewer, recentEarthquakesList, listScroller, resetMapLoc);
         });
 		fetchNewEarthquakes.start();
 
@@ -186,7 +160,7 @@ public class App extends Frame {
 		int zoom = mapViewer.getZoom();
 
 		frame.setTitle(
-		 		String.format("USAQuake " + Constants.getVersion() + " | Latitude: %.2f / Longitude %.2f | Zoom: %d",
+		 		String.format("USAQuake " + App.getVersion() + " | Latitude: %.2f / Longitude %.2f | Zoom: %d",
 						lat, lon, zoom));
 	}
 
@@ -210,5 +184,7 @@ public class App extends Frame {
 		return DEFAULT_ZOOM;
 	}
 
-
+	public static String getVersion() {
+		return version;
+	}
 }
