@@ -19,17 +19,16 @@ import model.Earthquake;
 
 public class FetchEQData {
 
-	private final static String USER_AGENT = "Mozilla/5.0";
+	private final static String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36";
 	private static Map<String, String> regions = new HashMap<String, String>();
 	
 	private static String[] supported_regions = { "CA", "California", "Alaska", "Nevada", "Hawaii", "Oregon", "Washington",
 			"Montana", "Idaho", "Texas", "Wyoming", "Utah", "New Mexico", "Colorado", "Oklahoma", "OK", "Maine", "ME",
 			"Kansas", "Japan", "Missouri","New Mexico", "Arizona", "Michigan","Kansas","Ohio","Puerto Rico"};
-	
-	
+
 	public FetchEQData() {
-		for (int i = 0; i < supported_regions.length; i++) {
-			regions.put(supported_regions[i], null);
+		for (int currentRegion = 0; currentRegion < supported_regions.length; currentRegion++) {
+			regions.put(supported_regions[currentRegion], "");
 		}
 	}
 
@@ -105,12 +104,9 @@ public class FetchEQData {
 		String[] words = str.split(" ");
 		return regions.containsKey(words[words.length - 1]);
 	}
-	
-
 
 	private static String getCurrentDateForApi() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		return LocalDate.now().format(formatter);
 	}
-
 }
