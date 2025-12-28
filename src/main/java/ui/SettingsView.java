@@ -28,17 +28,25 @@ public class SettingsView {
         frame.setVisible(true);
         frame.add(tabbedPane);
 
-        JLabel label = new JLabel();
-        label.setText("USAQuake " + App.getVersion());
-        JLabel label2 = new JLabel();
-        label2.setText("About: USAQuake displays recent earthquakes on a map.");
-        JLabel label3 = new JLabel();
-        label3.setText("App Navigation: Use left mouse button to pan, mouse wheel to zoom");
+        JLabel aboutLabel = new JLabel();
+        aboutLabel.setText("<html>" +
+                "<h3>About:</h3><br>" +
+                "<ul>" +
+                "<li>USAQuake " + App.getVersion() + "</li>" +
+                "<li>Plots earthquakes in real time using data from the USGS.</li>" +
+                "<li>Audio alerts for large earthquakes and possible tsunamis.</li>" +
+                "</ul></html>");
+        JLabel navigationLabel = new JLabel();
+        navigationLabel.setText("<html>" +
+                "<h3>App Navigation:</h3>" +
+                "<br>" +
+                "<ul>" +
+                "<li>Use left mouse button to pan, mouse wheel to zoom</li>" +
+                "</ul></html>");
         JPanel tab1Panel = new JPanel();
         tab1Panel.setLayout(new BoxLayout(tab1Panel,BoxLayout.PAGE_AXIS));
-        tab1Panel.add(label);
-        tab1Panel.add(label2);
-        tab1Panel.add(label3);
+        tab1Panel.add(aboutLabel);
+        tab1Panel.add(navigationLabel);
         tabbedPane.addTab("About", null, tab1Panel,
                 "About");
         
