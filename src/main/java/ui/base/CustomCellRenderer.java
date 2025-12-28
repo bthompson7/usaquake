@@ -22,20 +22,19 @@ public class CustomCellRenderer implements ListCellRenderer<Object>  {
 		ListModel<?> modelList = list.getModel();
 		Earthquake eq = (Earthquake) modelList.getElementAt(index);
 		
-		JLabel label = new JLabel(eq.getTimeEarthquakeHappened() + " " + eq.getMag() + " " + eq.getTitle());
+		JLabel label = new JLabel(eq.getTimeEarthquakeHappened() + " M" + eq.getMag() + " - " + eq.getTitle());
 		label.setOpaque(true);
 
-		
-		if(eq.getMag() >= 4.0) {
-			label.setBackground(Color.YELLOW);
+		if(eq.generatedTsunami()){
+			label.setBackground(Color.ORANGE);
+			label.setText(label.getText() + " - Tsunami Statement Issued");
+			return label;
 		}
-		
-		if(eq.generatedTsunami() || eq.getMag() >= 6.0) {
+
+		if(eq.getMag() >= 6.0) {
 			label.setBackground(Color.RED);		
 		}
-	
-		
-		
+
 		return label;
 	}
 

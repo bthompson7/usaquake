@@ -27,7 +27,7 @@ public class SettingsView {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         frame.add(tabbedPane);
-        
+
         JLabel label = new JLabel();
         label.setText("USAQuake " + App.getVersion());
         JLabel label2 = new JLabel();
@@ -57,6 +57,6 @@ public class SettingsView {
                 "Audio");
 
 	}
-	
-	
+
+
 }

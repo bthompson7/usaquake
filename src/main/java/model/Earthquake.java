@@ -19,6 +19,11 @@ public class Earthquake {
 	private String day;
 	private long unixTime;
 
+	public boolean isGeneratedTsunami() {
+		return generatedTsunami;
+	}
+	private boolean alertPlayed;
+
 	public String getTimeEarthquakeHappened() {
 		return timeEarthquakeHappened;
 	}
@@ -30,7 +35,12 @@ public class Earthquake {
 	public Earthquake() {
 
 	}
-
+	public boolean hasAlertPlayed() {
+		return alertPlayed;
+	}
+	public void setAlertPlayed(boolean alertPlayed) {
+		this.alertPlayed = alertPlayed;
+	}
 	public boolean generatedTsunami() {
 		return generatedTsunami;
 	}
@@ -78,7 +88,6 @@ public class Earthquake {
 	public void setHour(String hour) {
 		this.hour = hour;
 	}
-
 
 	public String getDay() {
 		return day;

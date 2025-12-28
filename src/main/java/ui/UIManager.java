@@ -85,25 +85,26 @@ public class UIManager {
 
                     // check if we need to play a sound
                     logFile.logInfo("Got Recent Earthquake data quakesList size is " + quakesList.size());
-                    if (recentQuake.getMag() >= 4.0 && recentQuake.getMag() <= 4.9) {
+                    if (!recentQuake.hasAlertPlayed() && recentQuake.getMag() >= 4.0 && recentQuake.getMag() <= 4.9) {
                         ps.playMag4Sound();
                         logFile.logInfo("An Earthquake between Mag 4.0 to 4.9 occurred!");
+                        recentQuake.setAlertPlayed(true);
                     }
 
-                    if (recentQuake.getMag() >= 5.0 && recentQuake.getMag() <= 5.9) {
+                    if (!recentQuake.hasAlertPlayed() && recentQuake.getMag() >= 5.0 && recentQuake.getMag() <= 5.9) {
                         ps.playMag5Sound();
                         logFile.logInfo("An Earthquake between Mag 5.0 to 5.9 occurred!");
-
+                        recentQuake.setAlertPlayed(true);
                     }
-                    if (recentQuake.getMag() >= 6.0 && recentQuake.getMag() <= 6.9) {
+                    if (!recentQuake.hasAlertPlayed() && recentQuake.getMag() >= 6.0 && recentQuake.getMag() <= 6.9) {
                         logFile.logInfo("An Earthquake between Mag 6.0 to 6.9 occurred!");
-
                         ps.playMag6Sound();
+                        recentQuake.setAlertPlayed(true);
                     }
-                    if (recentQuake.getMag() >= 7.0) {
+                    if (!recentQuake.hasAlertPlayed() && recentQuake.getMag() >= 7.0) {
                         ps.playMag7Sound();
                         logFile.logInfo("An Earthquake between Mag 7.0 or higher occurred!");
-
+                        recentQuake.setAlertPlayed(true);
                     }
 
                     DefaultListModel<Earthquake> listModel = new DefaultListModel<Earthquake>();
