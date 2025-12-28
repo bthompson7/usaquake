@@ -26,7 +26,6 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.event.MouseInputListener;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.cache.FileBasedLocalCache;
@@ -43,11 +42,9 @@ import ui.base.SelectionPainter;
 import log.AppLog;
 
 public class App extends Frame {
-
-	private static int DEFAULT_ZOOM = 9;
+	private static int DEFAULT_ZOOM = 11;
 	private static long ONE_UNIX_HOUR = 3600000;
 	private static final String version = "v0.5.0";
-
 
 	public static void main(String[] args) throws Exception {
 
@@ -97,7 +94,7 @@ public class App extends Frame {
 
 			try {
 				new SettingsView();
-			} catch (IOException | URISyntaxException | ConfigurationException e1) {
+			} catch (IOException | URISyntaxException e1) {
 				e1.printStackTrace();
 			}
 		});

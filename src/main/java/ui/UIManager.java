@@ -153,7 +153,7 @@ public class UIManager {
                                 int index = list.locationToIndex(evt.getPoint());
                                 ListModel<?> listModel = list.getModel();
                                 Earthquake quake = (Earthquake) listModel.getElementAt(index);
-                                mapViewer.setZoom(5);
+                                mapViewer.setZoom(9);
                                 GeoPosition pos = new GeoPosition(quake.getLat(),quake.getLon());
                                 mapViewer.setAddressLocation(pos);
 

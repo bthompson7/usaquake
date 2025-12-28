@@ -11,18 +11,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import org.apache.commons.configuration.ConfigurationException;
-
 import sound.PlaySound;
 
 public class SettingsView {
 
 	
-	public SettingsView() throws IOException, URISyntaxException, ConfigurationException {
+	public SettingsView() throws IOException, URISyntaxException {
 		initUI();
 	}
-	
-	
+
 	public void initUI() {
         JTabbedPane tabbedPane = new JTabbedPane();
         JFrame frame = new JFrame("Settings");
