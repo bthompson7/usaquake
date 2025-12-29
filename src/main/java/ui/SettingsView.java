@@ -43,10 +43,20 @@ public class SettingsView {
                 "<ul>" +
                 "<li>Use left mouse button to pan, mouse wheel to zoom</li>" +
                 "</ul></html>");
+
+        JLabel knownIssuesLabel = new JLabel();
+            knownIssuesLabel.setText("<html>" +
+                "<h3>Known Issues:</h3>" +
+                "<br>" +
+                "<ul>" +
+                "<li>Some tiles not displaying when zooming. Try zooming out to 12/13</li>" +
+                "</ul></html>");
+
         JPanel tab1Panel = new JPanel();
         tab1Panel.setLayout(new BoxLayout(tab1Panel,BoxLayout.PAGE_AXIS));
         tab1Panel.add(aboutLabel);
         tab1Panel.add(navigationLabel);
+        tab1Panel.add(knownIssuesLabel);
         tabbedPane.addTab("About", null, tab1Panel,
                 "About");
         
