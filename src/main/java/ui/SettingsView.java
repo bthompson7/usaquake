@@ -42,6 +42,7 @@ public class SettingsView {
                 "<br>" +
                 "<ul>" +
                 "<li>Use left mouse button to pan, mouse wheel to zoom</li>" +
+                "<li>Double click on an earthquake in the list to go right to that location</li>" +
                 "</ul></html>");
 
         JLabel knownIssuesLabel = new JLabel();
