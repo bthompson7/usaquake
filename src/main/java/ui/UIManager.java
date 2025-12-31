@@ -158,16 +158,6 @@ public class UIManager {
                                 GeoPosition pos = new GeoPosition(quake.getLat(),quake.getLon());
                                 mapViewer.setAddressLocation(pos);
                             }
-
-                            if (SwingUtilities.isRightMouseButton(evt)) {
-                                int index = list.locationToIndex(evt.getPoint());
-                                ListModel<?> listModel = list.getModel();
-                                Earthquake quake = (Earthquake) listModel.getElementAt(index);
-                                JPopupMenu popupMenu = new JPopupMenu();
-                                popupMenu.show(list, evt.getX(), evt.getY());
-                                list.add(popupMenu);
-                            }
-
                         }
                     });
                     CustomCellRenderer cell = new CustomCellRenderer();
