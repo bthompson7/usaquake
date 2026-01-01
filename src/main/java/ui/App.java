@@ -78,9 +78,9 @@ public class App extends Frame {
 		frame.setVisible(true);
 		mapViewer.setTileFactory(tileFactory);
 
-		JTextField tf = new JTextField();
-		tf.setEditable(false);
-		tf.setFont(new Font(null, Font.BOLD, 16));
+		JTextField textField = new JTextField();
+		textField.setEditable(false);
+		textField.setFont(new Font(null, Font.BOLD, 16));
 
 		// add menuItem to menuBar
 		JMenuItem aboutMenuItem = new JMenuItem("Settings", KeyEvent.VK_T);
@@ -102,14 +102,14 @@ public class App extends Frame {
 
 		JPanel panel = new JPanel(new GridLayout(0, 1));
 		panel.add(menuBar);
-		panel.add(tf);
+		panel.add(textField);
 		frame.add(panel, BorderLayout.NORTH);
 
 		// recent earthquakes side bar
 		JList<Earthquake> recentEarthquakesList = new JList<>();
 		JScrollPane listScroller = new JScrollPane();
 
-		Thread fetchNewEarthquakes = new Thread(() -> UIManager.update(logFile, exportEarthquakesItem, frame, panel, tf, mapViewer, recentEarthquakesList, listScroller, resetMapLoc));
+		Thread fetchNewEarthquakes = new Thread(() -> UIManager.update(logFile, exportEarthquakesItem, frame, panel, textField, mapViewer, recentEarthquakesList, listScroller, resetMapLoc));
 		fetchNewEarthquakes.start();
 
 		// Set the map focus

@@ -10,8 +10,6 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class PlaySound {
-
-	private URL url;
 	private Clip clip;
 	
 	public PlaySound() {
@@ -104,15 +102,13 @@ public class PlaySound {
 			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(url);
 			clip = AudioSystem.getClip();
 			clip.open(audioInputStream);
-		} catch (UnsupportedAudioFileException e) {
+		} catch (UnsupportedAudioFileException | LineUnavailableException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (LineUnavailableException e) {
-			e.printStackTrace();
 		}
-		
-		
-	}
+
+
+    }
 }
 

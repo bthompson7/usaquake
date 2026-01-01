@@ -19,22 +19,22 @@ import model.Earthquake;
 
 public class FetchEQData {
 
-	private final static String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36";
-	private static Map<String, String> regions = new HashMap<String, String>();
+	private final static String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36";
+	private static final Map<String, String> regions = new HashMap<>();
 	
-	private static String[] supported_regions = { "CA", "California", "Alaska", "Nevada", "Hawaii", "Oregon", "Washington",
+	private static final String[] supported_regions = { "CA", "California", "Alaska", "Nevada", "Hawaii", "Oregon", "Washington",
 			"Montana", "Idaho", "Texas", "Wyoming", "Utah", "New Mexico", "Colorado", "Oklahoma", "OK", "Maine", "ME",
 			"Kansas", "Japan", "Missouri","New Mexico", "Arizona", "Michigan","Kansas","Ohio","Puerto Rico"};
 
 	public FetchEQData() {
-		for (int currentRegion = 0; currentRegion < supported_regions.length; currentRegion++) {
-			regions.put(supported_regions[currentRegion], "");
-		}
+        for (String supportedRegion : supported_regions) {
+            regions.put(supportedRegion, "");
+        }
 	}
 
 	public List<Earthquake> fetchData() throws Exception {
 
-		List<Earthquake> quakes = new ArrayList<Earthquake>();
+		List<Earthquake> quakes = new ArrayList<>();
 
 		// sending the http get request to the usgs api
 		String url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=" + getCurrentDateForApi()
@@ -51,10 +51,10 @@ public class FetchEQData {
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 		String inputLine;
-		StringBuffer response = new StringBuffer();
+		StringBuilder response = new StringBuilder();
 
 		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine + "\n");
+			response.append(inputLine).append("\n");
 		}
 		in.close();
 
@@ -67,7 +67,7 @@ public class FetchEQData {
 			JsonObject features = j2Array.get(i).getAsJsonObject();
 			JsonObject properties = features.get("properties").getAsJsonObject();// info about the earthquake
 			JsonObject loc = features.get("geometry").getAsJsonObject();
-			String quakeLocation = "";
+			String quakeLocation;
 			
 			if(properties.get("place").isJsonNull()) {
 				quakeLocation = "Unknown Location";
@@ -87,12 +87,8 @@ public class FetchEQData {
 				eq.setHour(eq.unixHour(properties.get("time").getAsLong()));
 				eq.setDay(eq.unixDay(properties.get("time").getAsLong()));
 				eq.setUnixTime(properties.get("time").getAsLong());
-				
-				if (properties.get("tsunami").getAsInt() == 1) {
-					eq.setGeneratedTsunami(true);
-				} else {
-					eq.setGeneratedTsunami(false);
-				}
+
+                eq.setGeneratedTsunami(properties.get("tsunami").getAsInt() == 1);
 				eq.setMag(properties.get("mag").getAsDouble());
 				quakes.add(eq);
 			}

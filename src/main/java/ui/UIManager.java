@@ -33,16 +33,16 @@ public class UIManager {
      *
      * Updates the UI with new earthquakes
      *
-     * @param logFile
-     * @param exportEarthquakesItem
-     * @param frame
-     * @param panel
-     * @param tf
-     * @param mapViewer
-     * @param recentEarthquakesList
-     * @param listScroller
+     * @param logFile the log file
+     * @param exportEarthquakesItem the "Export Earthquakes to File" JMenuItem
+     * @param frame the JFrame
+     * @param panel the JPanel
+     * @param textField the most recent earthquakes textfield
+     * @param mapViewer the jxmaperview map
+     * @param recentEarthquakesList the recent earthquakes list JList item
+     * @param listScroller the recent earthquakes list scroll pane
      */
-    public static void update(AppLog logFile, JMenuItem exportEarthquakesItem, JFrame frame, JPanel panel, JTextField tf, JXMapViewer mapViewer, JList<Earthquake> recentEarthquakesList, JScrollPane listScroller, JMenuItem resetMapLoc){
+    public static void update(AppLog logFile, JMenuItem exportEarthquakesItem, JFrame frame, JPanel panel, JTextField textField, JXMapViewer mapViewer, JList<Earthquake> recentEarthquakesList, JScrollPane listScroller, JMenuItem resetMapLoc){
         try {
             while (true) {
                 logFile.logInfo("fetchAndDraw Thread updating map...");
@@ -119,18 +119,18 @@ public class UIManager {
                         if (quake.generatedTsunami() && quake.getMag() >= 6.5) {
 
                             name += " - Possible Tsunami Detected";
-                            tf.setText("Most Recent Earthquake: " + name);
-                            tf.setBackground(Color.RED);
+                            textField.setText("Most Recent Earthquake: " + name);
+                            textField.setBackground(Color.RED);
                             logFile.logInfo("Possible Tsunami Detected!!!");
 
                         } else if (recentQuake.getMag() >= 5.0) {
-                            tf.setText("Most Recent Earthquake: " + recentQuake.getTimeEarthquakeHappened()
+                            textField.setText("Most Recent Earthquake: " + recentQuake.getTimeEarthquakeHappened()
                                     + " M" + recentQuake.getMag() + " " + recentQuake.getTitle());
-                            tf.setBackground(Color.ORANGE);
+                            textField.setBackground(Color.ORANGE);
                         } else {
-                            tf.setText("Most Recent Earthquake: " + recentQuake.getTimeEarthquakeHappened()
+                            textField.setText("Most Recent Earthquake: " + recentQuake.getTimeEarthquakeHappened()
                                     + " M" + recentQuake.getMag() + " " + recentQuake.getTitle());
-                            tf.setBackground(Color.WHITE);
+                            textField.setBackground(Color.WHITE);
                         }
                         listModel.addElement(quake);
 
