@@ -67,9 +67,7 @@ public class SettingsView {
         
         JButton testSoundBtn = new JButton();
         testSoundBtn.setText("Test Sound");
-        testSoundBtn.addActionListener((e) -> {
-        	ps.playNewEarthquakeSound();
-        });
+        testSoundBtn.addActionListener((e) -> ps.playNewEarthquakeSound());
 
         tab2Panel.add(testSoundBtn);
         tabbedPane.addTab("Audio", null, tab2Panel,

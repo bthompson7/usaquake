@@ -5,8 +5,6 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -42,11 +40,11 @@ import ui.base.SelectionPainter;
 import log.AppLog;
 
 public class App extends Frame {
-	private static int DEFAULT_ZOOM = 11;
-	private static long ONE_UNIX_HOUR = 3600000;
-	private static final String version = "v0.5.0";
+	private static final int DEFAULT_ZOOM = 11;
+	private static final long ONE_UNIX_HOUR = 3600000;
+	private static final String version = "v0.5.1";
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 
 		// Create a TileFactoryInfo for OpenStreetMap
 		TileFactoryInfo info = new OSMTileFactoryInfo();
@@ -95,7 +93,7 @@ public class App extends Frame {
 			try {
 				new SettingsView();
 			} catch (IOException | URISyntaxException e1) {
-				e1.printStackTrace();
+				logFile.logError(e1.getMessage());
 			}
 		});
 		aboutMenu.add(aboutMenuItem);
@@ -108,12 +106,10 @@ public class App extends Frame {
 		frame.add(panel, BorderLayout.NORTH);
 
 		// recent earthquakes side bar
-		JList<Earthquake> recentEarthquakesList = new JList<Earthquake>();
+		JList<Earthquake> recentEarthquakesList = new JList<>();
 		JScrollPane listScroller = new JScrollPane();
 
-		Thread fetchNewEarthquakes = new Thread(() -> {
-            UIManager.update(logFile, exportEarthquakesItem, frame, panel, tf, mapViewer, recentEarthquakesList, listScroller, resetMapLoc);
-        });
+		Thread fetchNewEarthquakes = new Thread(() -> UIManager.update(logFile, exportEarthquakesItem, frame, panel, tf, mapViewer, recentEarthquakesList, listScroller, resetMapLoc));
 		fetchNewEarthquakes.start();
 
 		// Set the map focus
@@ -134,20 +130,8 @@ public class App extends Frame {
 		mapViewer.addMouseMotionListener(sa);
 		mapViewer.setOverlayPainter(sp);
 
-		mapViewer.addPropertyChangeListener("zoom", new PropertyChangeListener()
-
-		{
-			public void propertyChange(PropertyChangeEvent evt) {
-				updateWindowTitle(frame, mapViewer);
-			}
-		});
-
-		mapViewer.addPropertyChangeListener("center", new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				updateWindowTitle(frame, mapViewer);
-			}
-		});
-
+		mapViewer.addPropertyChangeListener("zoom", evt -> updateWindowTitle(frame, mapViewer));
+		mapViewer.addPropertyChangeListener("center", evt -> updateWindowTitle(frame, mapViewer));
 		updateWindowTitle(frame, mapViewer);
 	}
 
@@ -164,10 +148,9 @@ public class App extends Frame {
 	protected static String getCurrentDay() {
 		long unixTime = System.currentTimeMillis();
 		Date date = new Date(unixTime);
-		DateFormat formatter = new SimpleDateFormat("MM-dd-YYYY");
+		DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
 		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-		String day = formatter.format(date);
-		return day;
+        return formatter.format(date);
 	}
 
 	protected static long getCurrentUnixTime() {

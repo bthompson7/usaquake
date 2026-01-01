@@ -22,6 +22,13 @@ import java.util.List;
 import java.util.Set;
 
 public class UIManager {
+    private static boolean resetMapLocationListener = false;
+    private static boolean mouseListener = false;
+    private static Earthquake recentQuake = new Earthquake();
+    private static final FetchEQData fetch = new FetchEQData();
+    private static final PlaySound ps = new PlaySound();
+
+
     /**
      *
      * Updates the UI with new earthquakes
@@ -36,14 +43,12 @@ public class UIManager {
      * @param listScroller
      */
     public static void update(AppLog logFile, JMenuItem exportEarthquakesItem, JFrame frame, JPanel panel, JTextField tf, JXMapViewer mapViewer, JList<Earthquake> recentEarthquakesList, JScrollPane listScroller, JMenuItem resetMapLoc){
-        PlaySound ps = new PlaySound();
         try {
             while (true) {
                 logFile.logInfo("fetchAndDraw Thread updating map...");
-                FetchEQData fetch = new FetchEQData();
 
                 // waypoints to render
-                Set<MyWaypoint> waypoints = new HashSet<MyWaypoint>();
+                Set<MyWaypoint> waypoints = new HashSet<>();
 
                 List<Earthquake> quakesList = fetch.fetchData();
 
@@ -52,8 +57,7 @@ public class UIManager {
                     try {
 
                         FileWriter file = new FileWriter("Earthquakes " + App.getCurrentDay() + ".txt");
-                        for (int i = 0; i < quakesList.size(); i++) {
-                            Earthquake quake = quakesList.get(i);
+                        for (Earthquake quake : quakesList) {
                             String name = quake.getTimeEarthquakeHappened() + " M" + quake.getMag() + " "
                                     + quake.getTitle() + "\n";
                             file.write(name);
@@ -72,10 +76,8 @@ public class UIManager {
 
                 });
 
-                if (quakesList.size() > 0) {
-
-                    Earthquake recentQuake = quakesList.get(0);
-                    recentQuake.getTitle();
+                if (!quakesList.isEmpty()) {
+                    recentQuake = quakesList.get(0);
                     logFile.logInfo("Most Recent Quake is " + recentQuake.getTitle());
 
                     GeoPosition recentQuakePos = new GeoPosition(quakesList.get(0).getLat(),
@@ -107,7 +109,7 @@ public class UIManager {
                         recentQuake.setAlertPlayed(true);
                     }
 
-                    DefaultListModel<Earthquake> listModel = new DefaultListModel<Earthquake>();
+                    DefaultListModel<Earthquake> listModel = new DefaultListModel<>();
 
                     for (int i = 1; i < quakesList.size(); i++) {
                         Earthquake quake = quakesList.get(i);
@@ -147,19 +149,24 @@ public class UIManager {
                     }
 
                     recentEarthquakesList.setModel(listModel);
-                    recentEarthquakesList.addMouseListener(new MouseAdapter() {
-                        public void mouseClicked(MouseEvent evt) {
-                            JList<?> list = (JList<?>)evt.getSource();
-                            if (evt.getClickCount() == 2) {
-                                int index = list.locationToIndex(evt.getPoint());
-                                ListModel<?> listModel = list.getModel();
-                                Earthquake quake = (Earthquake) listModel.getElementAt(index);
-                                mapViewer.setZoom(9);
-                                GeoPosition pos = new GeoPosition(quake.getLat(),quake.getLon());
-                                mapViewer.setAddressLocation(pos);
+
+                    if(!mouseListener){
+                        mouseListener = true;
+                        recentEarthquakesList.addMouseListener(new MouseAdapter() {
+                            public void mouseClicked(MouseEvent evt) {
+                                JList<?> list = (JList<?>)evt.getSource();
+                                if (evt.getClickCount() == 2) {
+                                    int index = list.locationToIndex(evt.getPoint());
+                                    ListModel<?> listModel = list.getModel();
+                                    Earthquake quake = (Earthquake) listModel.getElementAt(index);
+                                    mapViewer.setZoom(9);
+                                    GeoPosition pos = new GeoPosition(quake.getLat(),quake.getLon());
+                                    mapViewer.setAddressLocation(pos);
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
+
                     CustomCellRenderer cell = new CustomCellRenderer();
                     recentEarthquakesList.setCellRenderer(cell);
                     recentEarthquakesList.setSize(30, 60);
@@ -170,15 +177,19 @@ public class UIManager {
                     frame.add(listScroller, BorderLayout.EAST);
 
                     // reset map location to the most recent earthquake
-                    resetMapLoc.addActionListener((e) -> {
-                        mapViewer.setZoom(App.getDefaultZoom());
-                        GeoPosition pos = new GeoPosition(recentQuake.getLat(),recentQuake.getLon());
-                        mapViewer.setAddressLocation(pos);
+                    if(!resetMapLocationListener){
+                        resetMapLocationListener = true;
+                        resetMapLoc.addActionListener((e) -> {
+                            mapViewer.setZoom(App.getDefaultZoom());
+                            GeoPosition pos = new GeoPosition(recentQuake.getLat(),recentQuake.getLon());
+                            mapViewer.setAddressLocation(pos);
+                            logFile.logInfo(recentQuake.getTitle() + " " + recentQuake.getLat() + " " + recentQuake.getLon());
 
-                    });
+                        });
+                    }
 
                     // draw waypoints
-                    WaypointPainter<MyWaypoint> waypointPainter = new WaypointPainter<MyWaypoint>();
+                    WaypointPainter<MyWaypoint> waypointPainter = new WaypointPainter<>();
                     waypointPainter.setWaypoints(waypoints);
 
                     waypointPainter.setRenderer(new FancyWaypointRenderer());
@@ -189,7 +200,7 @@ public class UIManager {
                     frame.revalidate();
                     frame.repaint();
 
-                    logFile.logInfo("DONE updating map sleeping.");
+                    logFile.logInfo("Finished updating map. Sleeping.");
                 } else {
                     logFile.logError("Unable to fetch recent earthquake data! Trying again in 2 minutes");
                     JOptionPane.showMessageDialog(frame, "Unable to fetch data. Trying again in 2 minutes",
@@ -197,13 +208,11 @@ public class UIManager {
                 }
 
                 Thread.sleep(120000); // 120000 = 2 minutes 180000 = 3 minutes 300000 = 5 minutes
-
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
             logFile.logError(
-                    "Unable to fetch recent earthquake data! Trying again in 2 minutes" + e.getMessage());
+                    "Unable to fetch recent earthquake data! Trying again in 2 minutes" +  e.getMessage());
             JOptionPane.showMessageDialog(frame, "Unable to fetch Earthquake data: " + e.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
 

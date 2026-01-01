@@ -107,10 +107,9 @@ public class Earthquake {
 	
 	public String unixTimeToDate(long epoch) {
 		Date date = new Date(epoch);
-		DateFormat formatter = new SimpleDateFormat("MM-dd-YYYY:HH:mm:ss");
+		DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy:HH:mm:ss");
 		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-		String dateFormatted = formatter.format(date);
-		return dateFormatted;
+		return formatter.format(date);
 
 	}
 	
@@ -118,17 +117,15 @@ public class Earthquake {
 		Date date = new Date(epoch);
 		DateFormat formatter = new SimpleDateFormat("HH");
 		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-		String hour = formatter.format(date);
-		return hour;
+		return formatter.format(date);
 	}
 
 	
 	public String unixDay(long epoch){
 		Date date = new Date(epoch);
-		DateFormat formatter = new SimpleDateFormat("MM-dd-YYYY");
+		DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
 		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-		String day = formatter.format(date);
-		return day;
+		return formatter.format(date);
 	}
 	
 
