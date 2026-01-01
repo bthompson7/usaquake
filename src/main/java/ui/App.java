@@ -5,25 +5,23 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-import javax.swing.JFrame;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 
+import data.DataService;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.cache.FileBasedLocalCache;
@@ -40,6 +38,7 @@ import ui.base.SelectionPainter;
 import log.AppLog;
 
 public class App extends Frame {
+	private static final DataService dataService = new DataService();
 	private static final int DEFAULT_ZOOM = 11;
 	private static final long ONE_UNIX_HOUR = 3600000;
 	private static final String version = "v0.5.1";
@@ -109,8 +108,15 @@ public class App extends Frame {
 		JList<Earthquake> recentEarthquakesList = new JList<>();
 		JScrollPane listScroller = new JScrollPane();
 
-		Thread fetchNewEarthquakes = new Thread(() -> UIManager.update(logFile, exportEarthquakesItem, frame, panel, textField, mapViewer, recentEarthquakesList, listScroller, resetMapLoc));
-		fetchNewEarthquakes.start();
+		// Task to update the map every few minutes
+		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+		Runnable updateMapTask  = () -> {
+				List<Earthquake> quakesList = dataService.getListOfEarthquakes(logFile);
+				SwingUtilities.invokeLater(() -> UIManager.updateUI(logFile, quakesList, exportEarthquakesItem, frame, panel, textField, mapViewer, recentEarthquakesList, listScroller, resetMapLoc));
+		};
+
+		// 120 = 2 minutes. 180 = 3 minutes. 300 = 5 minutes.
+		scheduler.scheduleAtFixedRate(updateMapTask, 1, 120, TimeUnit.SECONDS);
 
 		// Set the map focus
 		mapViewer.setZoom(DEFAULT_ZOOM);

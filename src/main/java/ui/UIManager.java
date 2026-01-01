@@ -1,6 +1,5 @@
 package ui;
 
-import data.FetchEQData;
 import model.Earthquake;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
@@ -25,7 +24,6 @@ public class UIManager {
     private static boolean resetMapLocationListener = false;
     private static boolean mouseListener = false;
     private static Earthquake recentQuake = new Earthquake();
-    private static final FetchEQData fetch = new FetchEQData();
     private static final PlaySound ps = new PlaySound();
 
 
@@ -42,15 +40,11 @@ public class UIManager {
      * @param recentEarthquakesList the recent earthquakes list JList item
      * @param listScroller the recent earthquakes list scroll pane
      */
-    public static void update(AppLog logFile, JMenuItem exportEarthquakesItem, JFrame frame, JPanel panel, JTextField textField, JXMapViewer mapViewer, JList<Earthquake> recentEarthquakesList, JScrollPane listScroller, JMenuItem resetMapLoc){
+    public static void updateUI(AppLog logFile, List<Earthquake> quakesList, JMenuItem exportEarthquakesItem, JFrame frame, JPanel panel, JTextField textField, JXMapViewer mapViewer, JList<Earthquake> recentEarthquakesList, JScrollPane listScroller, JMenuItem resetMapLoc){
         try {
-            while (true) {
                 logFile.logInfo("fetchAndDraw Thread updating map...");
-
                 // waypoints to render
                 Set<MyWaypoint> waypoints = new HashSet<>();
-
-                List<Earthquake> quakesList = fetch.fetchData();
 
                 // export list of earthquakes to text file
                 exportEarthquakesItem.addActionListener((e) -> {
@@ -206,10 +200,6 @@ public class UIManager {
                     JOptionPane.showMessageDialog(frame, "Unable to fetch data. Trying again in 2 minutes",
                             "Error", JOptionPane.ERROR_MESSAGE);
                 }
-
-                Thread.sleep(120000); // 120000 = 2 minutes 180000 = 3 minutes 300000 = 5 minutes
-            }
-
         } catch (Exception e) {
             logFile.logError(
                     "Unable to fetch recent earthquake data! Trying again in 2 minutes" +  e.getMessage());
