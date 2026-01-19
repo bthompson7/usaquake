@@ -23,6 +23,7 @@ import java.util.Set;
 public class UIManager {
     private static boolean resetMapLocationListener = false;
     private static boolean mouseListener = false;
+    private static boolean exportEarthquakesListener = false;
     private static Earthquake recentQuake = new Earthquake();
     private static final PlaySound ps = new PlaySound();
 
@@ -46,29 +47,32 @@ public class UIManager {
                 // waypoints to render
                 Set<MyWaypoint> waypoints = new HashSet<>();
 
-                // export list of earthquakes to text file
-                exportEarthquakesItem.addActionListener((e) -> {
-                    try {
+                if(!exportEarthquakesListener) {
+                    exportEarthquakesListener = true;
+                    // export list of earthquakes to text file
+                    exportEarthquakesItem.addActionListener((e) -> {
+                        try {
 
-                        FileWriter file = new FileWriter("Earthquakes " + App.getCurrentDay() + ".txt");
-                        for (Earthquake quake : quakesList) {
-                            String name = quake.getTimeEarthquakeHappened() + " M" + quake.getMag() + " "
-                                    + quake.getTitle() + "\n";
-                            file.write(name);
+                            FileWriter file = new FileWriter("Earthquakes " + App.getCurrentDay() + ".txt");
+                            for (Earthquake quake : quakesList) {
+                                String name = quake.getTimeEarthquakeHappened() + " M" + quake.getMag() + " "
+                                        + quake.getTitle() + "\n";
+                                file.write(name);
+                            }
+                            file.close();
+
+                            JOptionPane.showMessageDialog(frame, "All Earthquakes have been exported!", "Success",
+                                    JOptionPane.INFORMATION_MESSAGE);
+
+                        } catch (IOException e1) {
+                            logFile.logError("Error when writing to Earthquake file\n" + e1.getMessage());
+
+                            JOptionPane.showMessageDialog(frame, "Error when writing to Earthquake file.", "Error",
+                                    JOptionPane.ERROR_MESSAGE);
                         }
-                        file.close();
 
-                        JOptionPane.showMessageDialog(frame, "All Earthquakes have been exported!", "Success",
-                                JOptionPane.INFORMATION_MESSAGE);
-
-                    } catch (IOException e1) {
-                        logFile.logError("Error when writing to Earthquake file\n" + e1.getMessage());
-
-                        JOptionPane.showMessageDialog(frame, "Error when writing to Earthquake file.", "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-
-                });
+                    });
+                }
 
                 if (!quakesList.isEmpty()) {
                     recentQuake = quakesList.get(0);

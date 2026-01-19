@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -41,17 +40,13 @@ public class App extends Frame {
 	private static final DataService dataService = new DataService();
 	private static final int DEFAULT_ZOOM = 11;
 	private static final long ONE_UNIX_HOUR = 3600000;
-	private static final String version = "v0.5.1";
+	private static final String version = "v0.5.2";
 
 	public static void main(String[] args) {
 
 		// Create a TileFactoryInfo for OpenStreetMap
 		TileFactoryInfo info = new OSMTileFactoryInfo();
 		DefaultTileFactory tileFactory = new DefaultTileFactory(info);
-
-		// Setup local file cache
-		File cacheDir = new File(System.getProperty("user.home") + File.separator + ".jxmapviewer2");
-		tileFactory.setLocalCache(new FileBasedLocalCache(cacheDir, false));
 
 		// Setup JXMapViewer
 		final JXMapViewer mapViewer = new JXMapViewer();
@@ -104,7 +99,7 @@ public class App extends Frame {
 		panel.add(textField);
 		frame.add(panel, BorderLayout.NORTH);
 
-		// recent earthquakes side bar
+		// recent earthquakes sidebar
 		JList<Earthquake> recentEarthquakesList = new JList<>();
 		JScrollPane listScroller = new JScrollPane();
 

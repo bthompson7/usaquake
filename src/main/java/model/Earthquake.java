@@ -120,14 +120,12 @@ public class Earthquake {
 		return formatter.format(date);
 	}
 
-	
 	public String unixDay(long epoch){
 		Date date = new Date(epoch);
 		DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
 		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 		return formatter.format(date);
 	}
-	
 
 	public double round(double value, int places) {
 	    if (places < 0) {
@@ -138,8 +136,5 @@ public class Earthquake {
 	    bd = bd.setScale(places, RoundingMode.HALF_UP);
 	    return bd.doubleValue();
 	}
-
-	
-
 
 }

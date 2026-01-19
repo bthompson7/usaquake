@@ -7,16 +7,15 @@ import java.util.logging.SimpleFormatter;
 
 public class AppLog {
 
-	private Logger logger = Logger.getLogger("MyLog");
-	private FileHandler fh;
+	private final Logger logger = Logger.getLogger("MyLog");
 
-	public AppLog() {
+    public AppLog() {
 		init();
 	}
 
 	private void init() {
 		try {
-			fh = new FileHandler("usaquake.log", true);
+            FileHandler fh = new FileHandler("usaquake.log", true);
 			logger.addHandler(fh);
 			SimpleFormatter formatter = new SimpleFormatter();
 			fh.setFormatter(formatter);
