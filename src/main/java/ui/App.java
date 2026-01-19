@@ -48,6 +48,10 @@ public class App extends Frame {
 		TileFactoryInfo info = new OSMTileFactoryInfo();
 		DefaultTileFactory tileFactory = new DefaultTileFactory(info);
 
+		// Setup local file cache
+		File cacheDir = new File(System.getProperty("user.home") + File.separator + ".jxmapviewer2");
+		tileFactory.setLocalCache(new FileBasedLocalCache(cacheDir, true));
+
 		// Setup JXMapViewer
 		final JXMapViewer mapViewer = new JXMapViewer();
 
